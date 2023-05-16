@@ -16,4 +16,7 @@ public class HierarchyLabelPreset : ScriptableObject
     public bool useCustomInactiveColors;
     public Color backgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
     public Color inactiveBackgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
+    public Texture Image;
+    public string tooltip;
+    public string info;
 }

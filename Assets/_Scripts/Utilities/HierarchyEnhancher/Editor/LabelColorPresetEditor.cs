@@ -160,6 +160,28 @@ public class LabelColorPresetEditor : Editor
         script.icon = EditorGUILayout.ObjectField(script.icon, typeof(Texture), true) as Texture;
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
+    }
+    
+    public void ShowIcon()
+    {
+        EditorGUILayout.BeginHorizontal();
 
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("Icon", labelStyle);
+        script.Image = EditorGUILayout.ObjectField(script.Image, typeof(Texture), true) as Texture;
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndHorizontal();
+    }
+    
+    public void ShowTooltip()
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("Tooltip", labelStyle);
+        script.tooltip = EditorGUILayout.TextField(script.tooltip);
+        EditorGUILayout.EndVertical();
+        
+        EditorGUILayout.EndHorizontal();
     }
 }

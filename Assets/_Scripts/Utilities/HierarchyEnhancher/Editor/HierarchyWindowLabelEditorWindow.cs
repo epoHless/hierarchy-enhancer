@@ -131,6 +131,10 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
         editor!.ShowIdentifierIcon();
         GUILayout.Space(20);
+        editor!.ShowTooltip();
+        GUILayout.Space(20);
+        editor!.ShowIcon();
+        GUILayout.Space(20);
         editor!.ShowFontStyleAlignment();
         GUILayout.Space(20);
         editor!.ShowTextColorBGColor();
@@ -188,11 +192,11 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     /// <summary>
     /// Create and store in the default folder a new label with a given name.
     /// </summary>
-    /// <param name="name"></param>
-    private void AddNewLabel(string name)
+    /// <param name="_name"></param>
+    private void AddNewLabel(string _name)
     {
         var label = ScriptableObject.CreateInstance<HierarchyLabelPreset>();
-        string labelPath = String.Concat(LabelManager.LabelsDirectory, $"/LabelPreset_{name}.asset");
+        string labelPath = String.Concat(LabelManager.LabelsDirectory, $"/LabelPreset_{_name}.asset");
 
         if (!File.Exists(labelPath))
         {
