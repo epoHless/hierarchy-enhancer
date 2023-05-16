@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   fontStyle: 1
   alignment: 3
-  textColor: {r: 0.9150943, g: 0.7484831, b: 0.09927912, a: 1}
+  textColor: {r: 1, g: 0.83908284, b: 0.25943398, a: 1}
   inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomInactiveColors: 0
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}

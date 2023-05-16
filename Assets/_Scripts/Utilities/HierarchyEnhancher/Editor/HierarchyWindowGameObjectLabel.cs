@@ -14,29 +14,6 @@ public static class HierarchyWindowGameObjectLabel
         EditorApplication.hierarchyWindowItemOnGUI += HandleHierarchyWindowItemOnGUI;
     }
 
-    // public static void FetchLabels()
-    // {
-    //     if (!Directory.Exists($"{Application.dataPath}/HierarchyLabels"))
-    //         AssetDatabase.CreateFolder("Assets", "HierarchyLabels");
-    //     
-    //     LabelsDirectory = "Assets/HierarchyLabels/";
-    //
-    //     var assets = AssetDatabase.FindAssets("", new[] { LabelsDirectory });
-    //
-    //     Presets = new List<HierarchyLabelPreset>();
-    //     
-    //     foreach (var asset in assets)
-    //     {
-    //         var path = AssetDatabase.GUIDToAssetPath(asset);
-    //         var item = AssetDatabase.LoadAssetAtPath(path, typeof(HierarchyLabelPreset)) as HierarchyLabelPreset;
-    //
-    //         if (item)
-    //         {
-    //             AddPreset(item);
-    //         }
-    //     }
-    // }
-
     static void HandleHierarchyWindowItemOnGUI(int _instanceID, Rect _selectionRect)
     {
         var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(_instanceID), null);
@@ -77,18 +54,20 @@ public static class HierarchyWindowGameObjectLabel
     {
         if(_gameObject.transform.childCount > 0)
         {
-            GUI.DrawTexture(new Rect(_selectionRect.xMin - 24.5f, _selectionRect.yMin + 5, 7, 7),
-                HierarchyUtilities.DrawCube(1, 1, _color));
+            DrawLine(_selectionRect, _color, 7,7, - 24.5f, 5);
         }
 
         if (_gameObject.transform.parent != null)
         {
-            GUI.DrawTexture(new Rect(_selectionRect.xMin - 35, _selectionRect.yMin + 7.5f, 15, 1.5f),
-                HierarchyUtilities.DrawCube(1, 1, _color));
-
-            GUI.DrawTexture(new Rect(_selectionRect.xMin - 36.5f, _selectionRect.yMin, 2, 17),
-                HierarchyUtilities.DrawCube(1, 1, _color));
+            DrawLine(_selectionRect, _color, 15, 1.5f, -35, 7.5f);
+            DrawLine(_selectionRect, _color, 2, 17, -36.5f);
         }
+    }
+
+    private static void DrawLine(Rect _selectionRect, Color _color, float _width, float _height, float _xOffset, float _yOffset = 0)
+    {
+        GUI.DrawTexture(new Rect(_selectionRect.xMin + _xOffset, _selectionRect.yMin + _yOffset, _width, _height),
+            HierarchyUtilities.DrawCube(1, 1, _color));
     }
 
     private static bool IsGameObjectEnabled(int _instanceID)
@@ -117,26 +96,6 @@ public static class HierarchyWindowGameObjectLabel
         
         return style;
     }
-
-    // public static void AddPreset(HierarchyLabelPreset _preset)
-    // {
-    //     if (!Presets.Contains(_preset))
-    //     {
-    //         Presets.Add(_preset);
-    //     }
-    //     
-    //     EditorApplication.RepaintHierarchyWindow();
-    // }
-    //
-    // public static void RemovePreset(HierarchyLabelPreset _preset)
-    // {
-    //     if (Presets.Contains(_preset))
-    //     {
-    //         Presets.Remove(_preset);
-    //     }
-    //     
-    //     EditorApplication.RepaintHierarchyWindow();
-    // }
 }
 
 #endif
