@@ -25,7 +25,6 @@ public static class HierarchyWindowGameObjectLabel
         {
             if (content.text.StartsWith(preset.identifier))
             {
-                content.image = preset.Image;
                 string text = content.text.Remove(0,preset.identifier.Length);
 
                 if(gameObject) RenderLines(_selectionRect, gameObject, preset.textColor);
@@ -45,15 +44,34 @@ public static class HierarchyWindowGameObjectLabel
                 HierarchyUtilities.DrawCube(1, 1,
                     EditorUtility.InstanceIDToObject(_instanceID) == Selection.activeObject ? LabelManager.SelectedColor : LabelManager.UnselectedColor));
 
-            if (GUI.Button(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15),
-                    new GUIContent(_preset.icon, _preset.tooltip), GUIStyle.none))
+            int offset = 16;
+            
+            for (int i = 0; i < _preset.tooltips.Count; i++)
             {
-                var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
-                infoWindow.Open(_preset);
-            }
+                if(!_preset.tooltips[i].icon) continue;
+                
+                if (GUI.Button(new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15),
+                        new GUIContent(_preset.tooltips[i].icon,_preset.tooltips[i].tooltip), GUIStyle.none))
+                {
+                    var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
+                    infoWindow.Open(_preset, i);
+                }
 
-            var iconRect = new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15);
-            GUI.DrawTexture(iconRect, _preset.icon);
+                var iconRect = new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15);
+                GUI.DrawTexture(iconRect, _preset.tooltips[i].icon);
+
+                offset += 16;
+            }
+            
+            // if (GUI.Button(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15),
+            //         new GUIContent(_preset.icon, _preset.tooltip), GUIStyle.none))
+            // {
+            //     var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
+            //     infoWindow.Open(_preset);
+            // }
+            //
+            // var iconRect = new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15);
+            // GUI.DrawTexture(iconRect, _preset.icon);
         }
     }
 

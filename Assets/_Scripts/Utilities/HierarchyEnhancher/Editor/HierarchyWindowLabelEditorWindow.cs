@@ -13,8 +13,11 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     
     string labelName = String.Empty;
 
-    private Vector2 scrollPos = Vector2.zero;
+    private Vector2 labelsScrollPos = Vector2.zero;
+    private Vector2 tooltipsScrollPos = Vector2.zero;
     
+    int tab = 0;
+
     [MenuItem("Utilities/Hierarchy Labels")]
     private static void ShowWindow()
     {
@@ -118,6 +121,8 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
     private void RenderPreset(LabelColorPresetEditor editor)
     {
+        GUILayout.BeginHorizontal();
+        
         GUILayout.Label(selectedPreset.name.Split('_')[1], new GUIStyle()
         {
             fontStyle = FontStyle.Bold,
@@ -127,22 +132,51 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             },
             fontSize = 14
         });
-        GUILayout.Space(10);
 
-        editor!.ShowIdentifierIcon();
-        GUILayout.Space(20);
-        editor!.ShowTooltip();
-        GUILayout.Space(20);
-        editor!.ShowIcon();
-        GUILayout.Space(20);
-        editor!.ShowFontStyleAlignment();
-        GUILayout.Space(20);
-        editor!.ShowTextColorBGColor();
-        GUILayout.Space(20);
-        editor!.ShowCustomInactiveColors();
-        GUILayout.Space(20);
-        GUILayout.FlexibleSpace();
-        editor!.ShowPresetButtons();
+        tab = GUILayout.Toolbar(tab, new[] { "Options", "Icons & Info" });
+
+        GUILayout.EndHorizontal();
+        
+        switch (tab)
+        {
+            case 0 :
+            {
+                editor.showBase = false;
+                GUILayout.Space(10);
+
+                editor!.ShowIdentifierIcon();
+                GUILayout.Space(20);
+                editor!.ShowTooltip();
+                GUILayout.Space(20);
+                editor!.ShowFontStyleAlignment();
+                GUILayout.Space(20);
+                editor!.ShowTextColorBGColor();
+                GUILayout.Space(20);
+                editor!.ShowCustomInactiveColors();
+                GUILayout.Space(20);
+                GUILayout.FlexibleSpace();
+                editor!.ShowPresetButtons();
+                break;
+            }
+
+            case 1:
+            {
+                editor.showBase = true;
+
+                if (editor is Editor _base)
+                {
+                    GUILayout.BeginVertical(GUILayout.Width(455));
+                    tooltipsScrollPos = GUILayout.BeginScrollView(tooltipsScrollPos, false, false);
+                    
+                    _base.OnInspectorGUI();
+                    
+                    GUILayout.EndScrollView();
+                    GUILayout.EndVertical();
+                }
+                
+                break;
+            }
+        }
 
         EditorGUILayout.EndVertical();
     }
@@ -152,7 +186,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     /// </summary>
     private void RenderPresets()
     {
-        scrollPos = GUILayout.BeginScrollView(scrollPos, false, false);
+        labelsScrollPos = GUILayout.BeginScrollView(labelsScrollPos, false, false);
         
         var guiColor = GUI.color;
 

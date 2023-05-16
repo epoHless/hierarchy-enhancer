@@ -5,15 +5,13 @@ using UnityEngine;
 [CustomEditor(typeof(HierarchyLabelPreset))]
 public class LabelColorPresetEditor : Editor
 {
-    private SerializedProperty style;
-
     private HierarchyLabelPreset script;
-
     private GUIStyle labelStyle;
+
+    public bool showBase = false;
     
     private void Awake()
     {
-        style = serializedObject.FindProperty("FontStyle");
         script = (HierarchyLabelPreset)target;
 
         labelStyle = new GUIStyle()
@@ -36,39 +34,43 @@ public class LabelColorPresetEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        EditorGUILayout.BeginHorizontal();
+        if(showBase) base.OnInspectorGUI();
+        else
+        {
+            EditorGUILayout.BeginHorizontal();
         
-        ShowIdentifierIcon();
+            ShowIdentifierIcon();
 
-        EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
         
-        EditorGUILayout.Space(20);
+            EditorGUILayout.Space(20);
 
-        EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal();
         
-        ShowFontStyleAlignment();
+            ShowFontStyleAlignment();
 
-        EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
         
-        EditorGUILayout.Space(20);
+            EditorGUILayout.Space(20);
 
-        EditorGUILayout.BeginHorizontal();
-        EditorGUIUtility.labelWidth = 40;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUIUtility.labelWidth = 40;
         
-        ShowTextColorBGColor();
+            ShowTextColorBGColor();
 
-        EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
 
-        EditorGUILayout.Space(20);
+            EditorGUILayout.Space(20);
 
-        ShowCustomInactiveColors();
+            ShowCustomInactiveColors();
 
-        EditorGUILayout.Space(20);
+            EditorGUILayout.Space(20);
         
-        GUILayout.FlexibleSpace();
-        ShowPresetButtons();
+            GUILayout.FlexibleSpace();
+            ShowPresetButtons();
         
-        EditorApplication.RepaintHierarchyWindow();
+            EditorApplication.RepaintHierarchyWindow();
+        }
     }
 
     public void ShowPresetButtons()
@@ -158,17 +160,6 @@ public class LabelColorPresetEditor : Editor
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Icon", labelStyle);
         script.icon = EditorGUILayout.ObjectField(script.icon, typeof(Texture), true) as Texture;
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.EndHorizontal();
-    }
-    
-    public void ShowIcon()
-    {
-        EditorGUILayout.BeginHorizontal();
-
-        EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Icon", labelStyle);
-        script.Image = EditorGUILayout.ObjectField(script.Image, typeof(Texture), true) as Texture;
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class LabelInfoEditorWindow : EditorWindow
 {
     public HierarchyLabelPreset label;
+    public int index;
     
     private static void ShowWindow()
     {
@@ -13,16 +14,18 @@ public class LabelInfoEditorWindow : EditorWindow
         window.Show();
     }
 
-    public void Open(HierarchyLabelPreset _preset)
+    public void Open(HierarchyLabelPreset _preset, int _index)
     {
         label = _preset;
+        index = _index;
+        
         string text = label.name.Split('_')[1];
-        titleContent.text = $"{text}";
+        titleContent.text = $"{text} | {label.tooltips[index].tooltip} info";
         Show();
     }
 
     private void OnGUI()
     {
-        label.info = GUILayout.TextArea(label.info, GUILayout.Height(maxSize.y), GUILayout.ExpandHeight(true));
+        label.tooltips[index].info = GUILayout.TextArea(label.tooltips[index].info, GUILayout.Height(maxSize.y), GUILayout.ExpandHeight(true));
     }
 }

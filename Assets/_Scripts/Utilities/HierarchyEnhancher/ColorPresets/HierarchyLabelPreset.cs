@@ -1,22 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 public class HierarchyLabelPreset : ScriptableObject
 {
-    public string identifier;
+    [HideInInspector] public string identifier;
 
-    public Texture icon;
-    public FontStyle fontStyle;
-    public TextAnchor alignment = TextAnchor.MiddleLeft;
+    [HideInInspector] public Texture icon;
+    [HideInInspector] public FontStyle fontStyle;
+    [HideInInspector] public TextAnchor alignment = TextAnchor.MiddleLeft;
 
-    public Color textColor;
-    public Color inactiveTextColor;
+    [HideInInspector] public Color textColor;
+    [HideInInspector] public Color inactiveTextColor;
 
-    public bool useCustomInactiveColors;
-    public Color backgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
-    public Color inactiveBackgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
-    public Texture Image;
+    [HideInInspector] public bool useCustomInactiveColors;
+    [HideInInspector] public Color backgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
+    [HideInInspector] public Color inactiveBackgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
+    [HideInInspector] public string tooltip;
+    [HideInInspector] public string info;
+
+    [NonReorderable] public List<ImageTooltip> tooltips;
+}
+
+[System.Serializable]
+public class ImageTooltip
+{
     public string tooltip;
-    public string info;
+    public Texture icon;
+    [HideInInspector] public string info;
 }
