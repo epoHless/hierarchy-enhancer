@@ -73,18 +73,18 @@ public class LabelColorPresetEditor : Editor
 
     public void ShowPresetButtons()
     {
-        if (!HierarchyWindowGameObjectLabel.Presets.Contains(script))
+        if (!LabelManager.Presets.Contains(script))
         {
             if (GUILayout.Button("Add To Presets"))
             {
-                HierarchyWindowGameObjectLabel.AddPreset(script);
+                LabelManager.AddPreset(script);
             }
         }
         else
         {
             if (GUILayout.Button("Remove From Presets"))
             {
-                HierarchyWindowGameObjectLabel.RemovePreset(script);
+                LabelManager.RemovePreset(script);
             }
         }
     }

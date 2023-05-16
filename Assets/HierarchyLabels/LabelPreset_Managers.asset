@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 451e477c86b24a75b6744f5ec299feed, type: 3}
-  m_Name: LabelPreset_fdfd
+  m_Name: LabelPreset_Managers
   m_EditorClassIdentifier: 
   identifier: '>'
-  icon: {fileID: 2800000, guid: 16b10562fce5a0f4794872a75d897cc9, type: 3}
+  icon: {fileID: 0}
   fontStyle: 1
   alignment: 3
-  textColor: {r: 0.34509802, g: 1, b: 0.42141527, a: 1}
+  textColor: {r: 0.9150943, g: 0.7484831, b: 0.09927912, a: 1}
   inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomInactiveColors: 0
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}

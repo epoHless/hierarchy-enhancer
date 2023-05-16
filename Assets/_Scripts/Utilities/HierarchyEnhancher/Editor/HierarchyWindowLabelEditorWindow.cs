@@ -25,7 +25,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
     private void Awake()
     {
-        Presets = new List<HierarchyLabelPreset>(HierarchyWindowGameObjectLabel.Presets);
+        Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
         
         sidebarStyle = new GUIStyle()
         {
@@ -59,8 +59,8 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         {
             if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
             {
-                HierarchyWindowGameObjectLabel.FetchLabels();
-                Presets = new List<HierarchyLabelPreset>(HierarchyWindowGameObjectLabel.Presets);
+                LabelManager.FetchLabels();
+                Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
             }
         
             GUILayout.BeginHorizontal();
@@ -192,7 +192,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     private void AddNewLabel(string name)
     {
         var label = ScriptableObject.CreateInstance<HierarchyLabelPreset>();
-        string labelPath = String.Concat(HierarchyWindowGameObjectLabel.LabelsDirectory, $"/LabelPreset_{name}.asset");
+        string labelPath = String.Concat(LabelManager.LabelsDirectory, $"/LabelPreset_{name}.asset");
 
         if (!File.Exists(labelPath))
         {
@@ -205,7 +205,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             label.inactiveBackgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
         
             AddPreset(label);
-            HierarchyWindowGameObjectLabel.AddPreset(label);
+            LabelManager.AddPreset(label);
             EditorApplication.RepaintHierarchyWindow();
 
             AssetDatabase.SaveAssets();
@@ -227,10 +227,10 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     /// <param name="_label"></param>
     private void DeleteLabel(HierarchyLabelPreset _label)
     {
-        HierarchyWindowGameObjectLabel.RemovePreset(_label);
+        LabelManager.RemovePreset(_label);
         RemovePreset(_label);
 
-        string assetPath = String.Concat(HierarchyWindowGameObjectLabel.LabelsDirectory, $"/{_label.name}.asset");
+        string assetPath = String.Concat(LabelManager.LabelsDirectory, $"/{_label.name}.asset");
 
         if (File.Exists(assetPath))
         {
@@ -258,7 +258,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             Presets.Add(_preset);
         }
         
-        HierarchyWindowGameObjectLabel.AddPreset(_preset);
+        LabelManager.AddPreset(_preset);
     }
     
     /// <summary>
@@ -267,6 +267,6 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     /// <param name="_preset"></param>
     private void RemovePreset(HierarchyLabelPreset _preset)
     {
-        HierarchyWindowGameObjectLabel.RemovePreset(_preset);
+        LabelManager.RemovePreset(_preset);
     }
 }
