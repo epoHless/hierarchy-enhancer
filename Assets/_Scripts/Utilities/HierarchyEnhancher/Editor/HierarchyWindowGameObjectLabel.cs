@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,7 +17,11 @@ public static class HierarchyWindowGameObjectLabel
         var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(_instanceID), null);
         var gameObject = EditorUtility.InstanceIDToObject(_instanceID) as GameObject;
         
-        if(gameObject) RenderLines(_selectionRect, gameObject, Color.gray);
+        if(gameObject != null)
+        {
+            RenderLines(_selectionRect, gameObject, Color.gray);
+            RenderGameObjectToggle(_selectionRect, gameObject);
+        }
 
         foreach (var preset in LabelManager.Presets)
         {
@@ -27,14 +29,24 @@ public static class HierarchyWindowGameObjectLabel
             {
                 string text = content.text.Remove(0,preset.identifier.Length);
 
-                if(gameObject) RenderLines(_selectionRect, gameObject, preset.textColor);
-                RenderGUI(_instanceID, _selectionRect, text, preset, content);
+                if(gameObject)
+                {
+                    RenderLines(_selectionRect, gameObject, preset.textColor);
+                }
+
+                RenderGUI(_instanceID, _selectionRect, text, preset, content, gameObject);
             }
         }
     }
 
+    private static void RenderGameObjectToggle(Rect _selectionRect, GameObject gameObject)
+    {
+        gameObject.SetActive(GUI.Toggle(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15),
+            gameObject.activeSelf, GUIContent.none));
+    }
+
     private static void RenderGUI(int _instanceID, Rect _selectionRect, string _text, HierarchyLabelPreset _preset,
-        GUIContent _content)
+        GUIContent _content, GameObject _gameObject)
     {
         GUI.Label(_selectionRect, _text, SetStylePreset(_preset, _instanceID));
         
@@ -44,14 +56,21 @@ public static class HierarchyWindowGameObjectLabel
                 HierarchyUtilities.DrawCube(1, 1,
                     EditorUtility.InstanceIDToObject(_instanceID) == Selection.activeObject ? LabelManager.SelectedColor : LabelManager.UnselectedColor));
 
-            int offset = 16;
+            RenderGameObjectToggle(_selectionRect, _gameObject);
+
+            int offset = 32;
             
             for (int i = 0; i < _preset.tooltips.Count; i++)
             {
                 if(!_preset.tooltips[i].icon) continue;
                 
-                if (GUI.Button(new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15),
-                        new GUIContent(_preset.tooltips[i].icon,_preset.tooltips[i].tooltip), GUIStyle.none))
+                if (GUI.Button(new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15), //opens the info panel
+                        new GUIContent(_preset.tooltips[i].icon,_preset.tooltips[i].tooltip), _preset.tooltips[i].info != String.Empty ? GUIStyle.none : 
+                            new GUIStyle()
+                            {
+                                normal = new GUIStyleState()
+                                
+                            }))
                 {
                     var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
                     infoWindow.Open(_preset, i);
@@ -62,16 +81,6 @@ public static class HierarchyWindowGameObjectLabel
 
                 offset += 16;
             }
-            
-            // if (GUI.Button(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15),
-            //         new GUIContent(_preset.icon, _preset.tooltip), GUIStyle.none))
-            // {
-            //     var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
-            //     infoWindow.Open(_preset);
-            // }
-            //
-            // var iconRect = new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15);
-            // GUI.DrawTexture(iconRect, _preset.icon);
         }
     }
 
@@ -87,7 +96,7 @@ public static class HierarchyWindowGameObjectLabel
         if (_gameObject.transform.parent != null)
         {
             DrawLine(_selectionRect, _color, 15, 1.5f, -35, 7.45f);
-
+            
             for (int i = 0; i < parentCount; i++) //adds additional lines for nested objects
             {
                 if(_gameObject.transform.parent && 

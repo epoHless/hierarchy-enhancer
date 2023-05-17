@@ -17,8 +17,6 @@ public class HierarchyLabelPreset : ScriptableObject
     [HideInInspector] public bool useCustomInactiveColors;
     [HideInInspector] public Color backgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
     [HideInInspector] public Color inactiveBackgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
-    [HideInInspector] public string tooltip;
-    [HideInInspector] public string info;
 
     [NonReorderable] public List<ImageTooltip> tooltips;
 }

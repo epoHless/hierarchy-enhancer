@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
 
+[InitializeOnLoad]
 public static class LabelManager
 {
     public static string LabelsDirectory { get; private set; }
@@ -11,7 +12,7 @@ public static class LabelManager
 
     public static readonly Color SelectedColor = new Color(44f / 255f, 93f / 255f, 135f / 255f, 1f);
     public static readonly Color UnselectedColor = new Color(56f / 255f, 56f / 255f, 56f / 255f);
-
+    
     static LabelManager()
     {
         AssemblyReloadEvents.afterAssemblyReload += FetchLabels;

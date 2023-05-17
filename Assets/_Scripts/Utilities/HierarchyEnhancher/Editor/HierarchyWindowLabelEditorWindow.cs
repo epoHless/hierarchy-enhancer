@@ -145,15 +145,13 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
                 GUILayout.Space(10);
 
                 editor!.ShowIdentifierIcon();
-                GUILayout.Space(20);
-                editor!.ShowTooltip();
-                GUILayout.Space(20);
+                GUILayout.Space(10);
                 editor!.ShowFontStyleAlignment();
-                GUILayout.Space(20);
+                GUILayout.Space(10);
                 editor!.ShowTextColorBGColor();
-                GUILayout.Space(20);
+                GUILayout.Space(10);
                 editor!.ShowCustomInactiveColors();
-                GUILayout.Space(20);
+                GUILayout.Space(10);
                 GUILayout.FlexibleSpace();
                 editor!.ShowPresetButtons();
                 break;

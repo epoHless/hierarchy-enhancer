@@ -163,16 +163,4 @@ public class LabelColorPresetEditor : Editor
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
     }
-    
-    public void ShowTooltip()
-    {
-        EditorGUILayout.BeginHorizontal();
-
-        EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Tooltip", labelStyle);
-        script.tooltip = EditorGUILayout.TextField(script.tooltip);
-        EditorGUILayout.EndVertical();
-        
-        EditorGUILayout.EndHorizontal();
-    }
 }

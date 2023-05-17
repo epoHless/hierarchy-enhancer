@@ -16,41 +16,15 @@ MonoBehaviour:
   icon: {fileID: 2800000, guid: 0779ad3feec52124e97114bcbb12ef13, type: 3}
   fontStyle: 1
   alignment: 3
-  textColor: {r: 0.2588235, g: 1, b: 0.29013923, a: 1}
+  textColor: {r: 1, g: 0.71753854, b: 0.08962262, a: 1}
   inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomInactiveColors: 0
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
-  tooltip: This is a tooltip
-  info: 'there is a bug in the login
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'
   tooltips:
-  - icon: {fileID: 0}
-    tooltip: 
+  - tooltip: Main Camera
+    icon: {fileID: 2800000, guid: 8e3ec2dfd58b79842aa78376678a9a05, type: 3}
+    info: 
+  - tooltip: Manages the game flow
+    icon: {fileID: 2800000, guid: d41e3a51c74c48847a8eb97a319afda8, type: 3}
+    info: 

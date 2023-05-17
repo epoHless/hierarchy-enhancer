@@ -21,43 +21,16 @@ MonoBehaviour:
   useCustomInactiveColors: 0
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
-  tooltip: This is the player
-  info: 'This is the player info
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'
   tooltips:
-  - icon: {fileID: 2800000, guid: c223e0c507e2c6549a2cb97441b62cbe, type: 3}
-    tooltip: File
+  - tooltip: File
+    icon: {fileID: 2800000, guid: c223e0c507e2c6549a2cb97441b62cbe, type: 3}
     info: file info
-  - icon: {fileID: 2800000, guid: ff00345da0563d641903c5bd5bb748a4, type: 3}
-    tooltip: Bones
+  - tooltip: Bones
+    icon: {fileID: 2800000, guid: f0f8ff8921b22a74a8c79d955ace248d, type: 3}
     info: bones info
-  - icon: {fileID: 2800000, guid: ca51b19024094d1b87f3e07edb0a75fb, type: 3}
-    tooltip: Align
+  - tooltip: Align
+    icon: {fileID: 2800000, guid: ca51b19024094d1b87f3e07edb0a75fb, type: 3}
     info: aling info
+  - tooltip: Error
+    icon: {fileID: 2800000, guid: 65f0e363b74cf5845ab8c3fbc14f39ac, type: 3}
+    info: There is a bug in the player
