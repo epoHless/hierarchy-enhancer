@@ -21,6 +21,8 @@ public static class HierarchyWindowGameObjectLabel
         {
             RenderLines(_selectionRect, gameObject, Color.gray);
             RenderGameObjectToggle(_selectionRect, gameObject);
+
+            RenderFocusButton(_selectionRect, gameObject);
         }
 
         foreach (var preset in LabelManager.Presets)
@@ -39,6 +41,15 @@ public static class HierarchyWindowGameObjectLabel
         }
     }
 
+    private static void RenderFocusButton(Rect _selectionRect, GameObject _gameObject)
+    {
+        if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15), new GUIContent(){ tooltip = "Click to focus"}))
+        {
+            Selection.activeObject = _gameObject;
+            SceneView.FrameLastActiveSceneView();
+        }
+    }
+
     private static void RenderGameObjectToggle(Rect _selectionRect, GameObject gameObject)
     {
         gameObject.SetActive(GUI.Toggle(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15),
@@ -48,7 +59,7 @@ public static class HierarchyWindowGameObjectLabel
     private static void RenderGUI(int _instanceID, Rect _selectionRect, string _text, HierarchyLabelPreset _preset,
         GUIContent _content, GameObject _gameObject)
     {
-        GUI.Label(_selectionRect, _text, SetStylePreset(_preset, _instanceID));
+        GUI.Label(new Rect(_selectionRect.xMin + 16, _selectionRect.yMin, _selectionRect.width, _selectionRect.height), _text, SetStylePreset(_preset, _instanceID));
         
         if (_content.image != null && _preset.icon)
         {
@@ -57,6 +68,7 @@ public static class HierarchyWindowGameObjectLabel
                     EditorUtility.InstanceIDToObject(_instanceID) == Selection.activeObject ? LabelManager.SelectedColor : LabelManager.UnselectedColor));
 
             RenderGameObjectToggle(_selectionRect, _gameObject);
+            RenderFocusButton(_selectionRect, _gameObject);
 
             int offset = 32;
             
