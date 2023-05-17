@@ -16,7 +16,8 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     private Vector2 labelsScrollPos = Vector2.zero;
     private Vector2 tooltipsScrollPos = Vector2.zero;
     
-    int tab = 0;
+    int labelTab = 0;
+    int optionsTab = 0;
 
     [MenuItem("Utilities/Hierarchy Labels")]
     private static void ShowWindow()
@@ -50,76 +51,101 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.BeginHorizontal();
-
         EditorGUILayout.BeginVertical();
-        
-        RenderPresets();
-        
-        GUILayout.FlexibleSpace();
 
-        if (Presets.Count > 0)
+        optionsTab = GUILayout.Toolbar(optionsTab, new[] { "Labels", "Options" }, GUILayout.Width(225));
+
+        switch (optionsTab) //toggle panels
         {
-            if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
+            case 0: //labels panel
             {
-                LabelManager.FetchLabels();
-                Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
-            }
-        
-            GUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal(); //1
 
-            if (GUILayout.Button("Add All", GUILayout.Width(110)))
-            {
-                for (int i = 0; i < Presets.Count; i++)
+                EditorGUILayout.BeginVertical(); //2
+
+                RenderPresets();
+        
+                GUILayout.FlexibleSpace();
+
+                if (Presets.Count > 0)
                 {
-                    AddPreset(Presets[i]);
-                }
-            }
+                    if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
+                    {
+                        LabelManager.FetchLabels();
+                        Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
+                    }
         
-            if (GUILayout.Button("Remove All", GUILayout.Width(110)))
-            {
-                for (int i = 0; i < Presets.Count; i++)
+                    GUILayout.BeginHorizontal();
+
+                    if (GUILayout.Button("Add All", GUILayout.Width(110)))
+                    {
+                        for (int i = 0; i < Presets.Count; i++)
+                        {
+                            AddPreset(Presets[i]);
+                        }
+                    }
+        
+                    if (GUILayout.Button("Remove All", GUILayout.Width(110)))
+                    {
+                        for (int i = 0; i < Presets.Count; i++)
+                        {
+                            RemovePreset(Presets[i]);
+                        }
+                    }
+
+                    GUILayout.EndHorizontal();
+                }
+
+                GUILayout.BeginHorizontal();
+
+                labelName = GUILayout.TextField(labelName, GUILayout.Width(110));
+        
+                if (GUILayout.Button("New Label", GUILayout.Width(110)))
                 {
-                    RemovePreset(Presets[i]);
+                    if(labelName != String.Empty) AddNewLabel(labelName);
                 }
+
+                GUILayout.EndHorizontal();
+                EditorGUILayout.EndVertical(); //2
+
+                if(selectedPreset) //Create the editor for the selected Preset
+                {
+                    var editor = Editor.CreateEditor(selectedPreset) as LabelColorPresetEditor;
+
+                    EditorGUILayout.BeginVertical();
+
+                    // Shows the label properties to modify
+
+                    GUILayout.Space(10);
+            
+                    GUI.DrawTexture(new Rect(new Vector2(232, 0), new Vector2(3, 400)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
+            
+                    RenderPreset(editor);
+                }
+
+                EditorGUILayout.EndHorizontal(); //1
+                
+                break;
             }
 
-            GUILayout.EndHorizontal();
+            case 1: //options panel
+            {
+                GUILayout.Label("Show GameObject Focus Button");
+                LabelManager.ShowFocusButton = GUILayout.Toggle(LabelManager.ShowFocusButton, "");
+                GUILayout.Label("Show GameObject Toggle Button");
+                LabelManager.ShowToggleButton = GUILayout.Toggle(LabelManager.ShowToggleButton, "");
+                break;
+            }
         }
-
-        GUILayout.BeginHorizontal();
-
-        labelName = GUILayout.TextField(labelName, GUILayout.Width(110));
         
-        if (GUILayout.Button("New Label", GUILayout.Width(110)))
-        {
-            if(labelName != String.Empty) AddNewLabel(labelName);
-        }
-
-        GUILayout.EndHorizontal();
+        
+        
         EditorGUILayout.EndVertical();
-
-        if(selectedPreset) //Create the editor for the selected Preset
-        {
-            var editor = Editor.CreateEditor(selectedPreset) as LabelColorPresetEditor;
-
-            EditorGUILayout.BeginVertical();
-
-            // Shows the label properties to modify
-
-            GUILayout.Space(10);
-            
-            GUI.DrawTexture(new Rect(new Vector2(232, 0), new Vector2(3, 400)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
-            
-            RenderPreset(editor);
-        }
-
-        EditorGUILayout.EndHorizontal();
         
         EditorApplication.RepaintHierarchyWindow();
     }
 
-    private void RenderPreset(LabelColorPresetEditor editor)
+    private void RenderPreset(LabelColorPresetEditor _editor)
     {
         GUILayout.BeginHorizontal();
         
@@ -133,35 +159,35 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             fontSize = 14
         });
 
-        tab = GUILayout.Toolbar(tab, new[] { "Options", "Icons & Info" });
+        labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "Icons & Info" });
 
         GUILayout.EndHorizontal();
         
-        switch (tab)
+        switch (labelTab)
         {
             case 0 :
             {
-                editor.showBase = false;
+                _editor.showBase = false;
                 GUILayout.Space(10);
 
-                editor!.ShowIdentifierIcon();
+                _editor!.ShowIdentifierIcon();
                 GUILayout.Space(10);
-                editor!.ShowFontStyleAlignment();
+                _editor!.ShowFontStyleAlignment();
                 GUILayout.Space(10);
-                editor!.ShowTextColorBGColor();
+                _editor!.ShowTextColorBGColor();
                 GUILayout.Space(10);
-                editor!.ShowCustomInactiveColors();
+                _editor!.ShowCustomInactiveColors();
                 GUILayout.Space(10);
                 GUILayout.FlexibleSpace();
-                editor!.ShowPresetButtons();
+                _editor!.ShowPresetButtons();
                 break;
             }
 
             case 1:
             {
-                editor.showBase = true;
+                _editor.showBase = true;
 
-                if (editor is Editor _base)
+                if (_editor is Editor _base)
                 {
                     GUILayout.BeginVertical(GUILayout.Width(455));
                     tooltipsScrollPos = GUILayout.BeginScrollView(tooltipsScrollPos, false, false);

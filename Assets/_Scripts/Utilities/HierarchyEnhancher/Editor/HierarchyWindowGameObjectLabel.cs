@@ -43,6 +43,8 @@ public static class HierarchyWindowGameObjectLabel
 
     private static void RenderFocusButton(Rect _selectionRect, GameObject _gameObject)
     {
+        if (!LabelManager.ShowFocusButton) return;
+        
         if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15), new GUIContent(){ tooltip = "Click to focus"}))
         {
             Selection.activeObject = _gameObject;
@@ -52,6 +54,8 @@ public static class HierarchyWindowGameObjectLabel
 
     private static void RenderGameObjectToggle(Rect _selectionRect, GameObject gameObject)
     {
+        if (!LabelManager.ShowToggleButton) return;
+
         gameObject.SetActive(GUI.Toggle(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 15, 15),
             gameObject.activeSelf, GUIContent.none));
     }

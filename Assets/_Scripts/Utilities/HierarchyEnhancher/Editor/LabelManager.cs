@@ -12,6 +12,9 @@ public static class LabelManager
 
     public static readonly Color SelectedColor = new Color(44f / 255f, 93f / 255f, 135f / 255f, 1f);
     public static readonly Color UnselectedColor = new Color(56f / 255f, 56f / 255f, 56f / 255f);
+
+    public static bool ShowFocusButton;
+    public static bool ShowToggleButton;
     
     static LabelManager()
     {
