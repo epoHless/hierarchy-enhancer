@@ -19,7 +19,7 @@ MonoBehaviour:
   textColor: {r: 0.30588233, g: 0.96047443, b: 1, a: 1}
   inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomInactiveColors: 0
-  backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
+  backgroundColor: {r: 0.30588236, g: 0.9607844, b: 1, a: 1}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   tooltips:
   - tooltip: tooltip
@@ -27,3 +27,4 @@ MonoBehaviour:
     info: 
   gameObjects:
   - ID: 24492
+  isActive: 1

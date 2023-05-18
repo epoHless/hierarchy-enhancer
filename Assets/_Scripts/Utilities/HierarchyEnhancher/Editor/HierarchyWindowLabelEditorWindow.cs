@@ -168,8 +168,8 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         {
             case 0 :
             {
-                _editor.showBase = false;
-                
+                GUILayout.BeginVertical(GUILayout.Width(463));
+
                 GUILayout.Space(10);
                 _editor!.ShowIdentifierIcon();
                 GUILayout.Space(10);
@@ -178,9 +178,8 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
                 _editor!.ShowTextColorBGColor();
                 GUILayout.Space(10);
                 _editor!.ShowCustomInactiveColors();
-                GUILayout.Space(10);
-                GUILayout.FlexibleSpace();
-                _editor!.ShowPresetButtons();
+                
+                GUILayout.EndVertical();
                 break;
             }
 

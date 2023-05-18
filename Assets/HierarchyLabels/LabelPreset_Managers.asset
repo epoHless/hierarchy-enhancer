@@ -23,7 +23,5 @@ MonoBehaviour:
   inactiveBackgroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
   tooltips: []
   gameObjects:
-  - ID: 24560
-  - ID: 24510
   - ID: 24488
-  - ID: 24608
+  isActive: 1

@@ -8,8 +8,6 @@ public class LabelColorPresetEditor : Editor
     public HierarchyLabelPreset script;
     private GUIStyle labelStyle;
 
-    public bool showBase = false;
-
     private void Awake()
     {
         script = (HierarchyLabelPreset)target;
@@ -34,54 +32,38 @@ public class LabelColorPresetEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        if(showBase) base.OnInspectorGUI();
-        else
-        {
-            EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.BeginHorizontal();
 
-            ShowIdentifierIcon();
+        ShowIdentifierIcon();
 
-            EditorGUILayout.EndHorizontal();
-        
-            EditorGUILayout.Space(20);
+        EditorGUILayout.EndHorizontal();
+    
+        EditorGUILayout.Space(20);
 
-            EditorGUILayout.BeginHorizontal();
-        
-            ShowFontStyleAlignment();
+        EditorGUILayout.BeginHorizontal();
+    
+        ShowFontStyleAlignment();
 
-            EditorGUILayout.EndHorizontal();
-        
-            EditorGUILayout.Space(20);
+        EditorGUILayout.EndHorizontal();
+    
+        EditorGUILayout.Space(20);
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 40;
-        
-            ShowTextColorBGColor();
+        EditorGUILayout.BeginHorizontal();
+        EditorGUIUtility.labelWidth = 40;
+    
+        ShowTextColorBGColor();
 
-            EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.Space(20);
+        EditorGUILayout.Space(20);
 
-            ShowCustomInactiveColors();
+        ShowCustomInactiveColors();
 
-            EditorGUILayout.Space(20);
-        
-            GUILayout.FlexibleSpace();
-            ShowPresetButtons();
-        
-            EditorApplication.RepaintHierarchyWindow();
-        }
-    }
-
-    public void ShowPresetButtons()
-    {
-        if (!LabelManager.Presets.Contains(script))
-        {
-            if (GUILayout.Button("Add To Presets"))
-            {
-                LabelManager.AddPreset(script);
-            }
-        }
+        EditorGUILayout.Space(20);
+    
+        GUILayout.FlexibleSpace();
+    
+        EditorApplication.RepaintHierarchyWindow();
     }
 
     public void ShowCustomInactiveColors()
@@ -90,9 +72,9 @@ public class LabelColorPresetEditor : Editor
 
         if (script.useCustomInactiveColors)
         {
-            EditorGUILayout.Space(10);
+            EditorGUILayout.Space(5);
 
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(463));
             
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Text Color", labelStyle);
@@ -142,7 +124,7 @@ public class LabelColorPresetEditor : Editor
 
     public void ShowIdentifierIcon()
     {
-        GUILayout.BeginHorizontal(GUILayout.Width(450));
+        GUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Icon", labelStyle);
