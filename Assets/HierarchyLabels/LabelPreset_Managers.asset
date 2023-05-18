@@ -21,15 +21,8 @@ MonoBehaviour:
   useCustomInactiveColors: 0
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   inactiveBackgroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
-  tooltips:
-  - tooltip: Main Camera
-    icon: {fileID: 2800000, guid: 8e3ec2dfd58b79842aa78376678a9a05, type: 3}
-    info: 
-  - tooltip: Manages the game flow
-    icon: {fileID: 2800000, guid: d41e3a51c74c48847a8eb97a319afda8, type: 3}
-    info: 
+  tooltips: []
   gameObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - ID: 24560
+  - ID: 24510
+  - ID: 24488

@@ -21,9 +21,7 @@ MonoBehaviour:
   useCustomInactiveColors: 0
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
-  tooltips:
-  - tooltip: 
-    icon: {fileID: 0}
-    info: 
+  tooltips: []
   gameObjects:
-  - {fileID: 0}
+  - ID: 24518
+  - ID: 24572

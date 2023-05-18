@@ -27,9 +27,12 @@ public static class HierarchyWindowGameObjectLabel
 
         foreach (var preset in LabelManager.Presets)
         {
-            if (/*content.text.StartsWith(preset.identifier)*/ gameObject != null && preset.gameObjects.Contains(gameObject))
+            bool value = preset.gameObjects is { Count: > 0 } &&
+                         preset.gameObjects.Find(_dictionary => _dictionary.GameObject == gameObject) != null;
+            
+            if (gameObject != null && value)
             {
-                string text = content.text/*.Remove(0,preset.identifier.Length)*/;
+                string text = content.text;
 
                 if(gameObject)
                 {

@@ -19,7 +19,7 @@ public class HierarchyLabelPreset : ScriptableObject
     [HideInInspector] public Color inactiveBackgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
 
     [NonReorderable] public List<ImageTooltip> tooltips;
-    [NonReorderable, HideInInspector] public List<GameObject> gameObjects;
+    [NonReorderable, HideInInspector] public List<ObjectIDDictionary> gameObjects;
 }
 
 [System.Serializable]

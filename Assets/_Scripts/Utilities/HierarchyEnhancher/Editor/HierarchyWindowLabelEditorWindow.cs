@@ -229,7 +229,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
                 
                 if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    _editor.script.gameObjects.Add(null);    
+                    _editor.script.gameObjects.Add(new ObjectIDDictionary());    
                 }
                 
                 GUILayout.EndHorizontal();
@@ -238,7 +238,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
                 {
                     GUILayout.BeginHorizontal(GUILayout.Width(455));
 
-                    _editor.script.gameObjects[i] = (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i], typeof(GameObject), true);
+                    _editor.script.gameObjects[i].GameObject = (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i].GameObject, typeof(GameObject), true);
                     
                     foreach (var preset in Presets)
                     {
@@ -325,7 +325,9 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             label.inactiveTextColor = Color.white;
             label.backgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
             label.inactiveBackgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
-        
+
+            label.gameObjects = new List<ObjectIDDictionary>();
+            
             AddPreset(label);
             LabelManager.AddPreset(label);
             EditorApplication.RepaintHierarchyWindow();
