@@ -19,7 +19,7 @@ MonoBehaviour:
   textColor: {r: 0.9528302, g: 0.32809716, b: 0.92545474, a: 1}
   inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomInactiveColors: 0
-  backgroundColor: {r: 1, g: 0.3443396, b: 0.3443396, a: 1}
+  backgroundColor: {r: 1, g: 0.3443396, b: 0.3443396, a: 0.5019608}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   tooltips:
   - tooltip: test

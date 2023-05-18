@@ -117,7 +117,10 @@ public static class HierarchyWindowGameObjectLabel
 
         if (_gameObject.transform.parent != null)
         {
-            DrawLine(_selectionRect, _color, 15, 1.5f, -35, 7.45f);
+            if (_gameObject.transform.childCount == 0)
+                DrawLine(_selectionRect, _color, 30f, 1.5f, -35f, 7.45f);
+            else 
+                DrawLine(_selectionRect, _color, 15, 1.5f, -35, 7.45f);
 
             for (int i = 0; i < parentCount; i++) //adds additional lines for nested objects
             {
@@ -129,6 +132,7 @@ public static class HierarchyWindowGameObjectLabel
                     DrawLine(_selectionRect, _color, 2, 8.5f, -36.5f - (14f * i));
                 else
                     DrawLine(_selectionRect, _color, 2, 17, -36.5f - (14f * i));
+                
             }
         }
     }
