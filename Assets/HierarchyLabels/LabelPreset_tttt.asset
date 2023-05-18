@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 451e477c86b24a75b6744f5ec299feed, type: 3}
-  m_Name: LabelPreset_Enemies
+  m_Name: LabelPreset_tttt
   m_EditorClassIdentifier: 
-  identifier: Enemies
-  icon: {fileID: 0}
+  identifier: tttt
+  icon: {fileID: 2800000, guid: 7b86a539750e1a44ca7ec5b7f690babd, type: 3}
   fontStyle: 0
   alignment: 3
   textColor: {r: 1, g: 1, b: 1, a: 1}
@@ -22,10 +22,9 @@ MonoBehaviour:
   backgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   tooltips:
-  - tooltip: test
-    icon: {fileID: 2800000, guid: c223e0c507e2c6549a2cb97441b62cbe, type: 3}
+  - tooltip: 
+    icon: {fileID: 0}
     info: 
   gameObjects:
-  - ID: 24538
-  - ID: 24546
+  - ID: 24586
   isActive: 1

@@ -20,6 +20,8 @@ public class HierarchyLabelPreset : ScriptableObject
 
     [NonReorderable] public List<ImageTooltip> tooltips;
     [NonReorderable, HideInInspector] public List<ObjectIDDictionary> gameObjects;
+
+    public bool isActive = true;
 }
 
 [System.Serializable]

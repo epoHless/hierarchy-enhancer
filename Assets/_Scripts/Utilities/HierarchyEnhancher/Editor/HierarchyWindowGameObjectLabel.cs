@@ -21,12 +21,13 @@ public static class HierarchyWindowGameObjectLabel
         {
             RenderLines(_selectionRect, gameObject, Color.gray);
             RenderGameObjectToggle(_selectionRect, gameObject);
-
             RenderFocusButton(_selectionRect, gameObject);
         }
 
         foreach (var preset in LabelManager.Presets)
         {
+            if (!preset.isActive) continue;
+            
             bool value = preset.gameObjects is { Count: > 0 } &&
                          preset.gameObjects.Find(_dictionary => _dictionary.GameObject == gameObject) != null;
             

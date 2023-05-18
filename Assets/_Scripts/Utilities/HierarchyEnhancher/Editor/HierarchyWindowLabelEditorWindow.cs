@@ -9,12 +9,11 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 {
     private HierarchyLabelPreset selectedPreset = null;
 
-    private GUIStyle sidebarStyle;
-    
     string labelName = String.Empty;
 
     private Vector2 labelsScrollPos = Vector2.zero;
     private Vector2 tooltipsScrollPos = Vector2.zero;
+    private Vector2 gameObjectsScrollPos = Vector2.zero;
     
     int labelTab = 0;
     int optionsTab = 0;
@@ -34,18 +33,6 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
     private void InitUI()
     {
-        sidebarStyle = new GUIStyle()
-        {
-            hover = new GUIStyleState()
-            {
-                textColor = Color.cyan
-            },
-            normal = new GUIStyleState()
-            {
-                background = HierarchyUtilities.DrawCube(1, 1, Color.gray)
-            }
-        };
-
         minSize = new Vector2(710, 400);
         maxSize = minSize;
 
@@ -118,9 +105,9 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
                     // Shows the label properties to modify
 
-                    GUILayout.Space(10);
+                    GUILayout.Space(-20);
             
-                    GUI.DrawTexture(new Rect(new Vector2(232, 0), new Vector2(3, 400)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
+                    GUI.DrawTexture(new Rect(new Vector2(230, 0), new Vector2(3, 400)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
             
                     RenderPreset(editor);
                 }
@@ -199,66 +186,100 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
             case 1:
             {
-                _editor.showBase = true;
+                GUILayout.Space(20);
+                
+                GUILayout.BeginVertical(GUILayout.Width(468));
+                
+                tooltipsScrollPos = GUILayout.BeginScrollView(tooltipsScrollPos, false, false);
 
-                if (_editor is Editor _base)
+                GUILayout.BeginHorizontal(GUILayout.Width(460));
+
+                EditorGUILayout.LabelField($"Tooltips Count = {_editor.script.tooltips.Count}");
+    
+                if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    GUILayout.BeginVertical(GUILayout.Width(455));
-                    tooltipsScrollPos = GUILayout.BeginScrollView(tooltipsScrollPos, false, false);
-                    
-                    _base.OnInspectorGUI();
-                    
-                    GUILayout.EndScrollView();
-                    GUILayout.EndVertical();
+                    _editor.script.tooltips.Add(new ImageTooltip());
+                }
+
+                GUILayout.EndHorizontal();
+                
+                for (int i = 0; i < _editor.script.tooltips.Count; i++)
+                {
+                    GUILayout.BeginHorizontal(GUILayout.Width(460));
+
+                    _editor.script.tooltips[i].tooltip = EditorGUILayout.TextField(_editor.script.tooltips[i].tooltip);
+                    _editor.script.tooltips[i].icon = (Texture)EditorGUILayout.ObjectField(_editor.script.tooltips[i].icon, typeof(Texture), true);
+
+                    if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+                    {
+                        if (_editor.script.tooltips.Contains(_editor.script.tooltips[i]))
+                            _editor.script.tooltips.Remove(_editor.script.tooltips[i]);
+                    }
+
+                    GUILayout.EndHorizontal();
                 }
                 
+                GUILayout.EndScrollView();
+                
+                GUILayout.EndVertical();
+
                 break;
             }
 
             case 2:
             {
                 GUILayout.Space(20);
-                
-                GUILayout.BeginHorizontal(GUILayout.Width(455));
-
-                EditorGUILayout.LabelField($"GameObjects Count = {_editor.script.gameObjects.Count}");
-                
-                if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
-                {
-                    _editor.script.gameObjects.Add(new ObjectIDDictionary());    
-                }
-                
-                GUILayout.EndHorizontal();
-
-                for (int i = 0; i < _editor.script.gameObjects.Count; i++)
-                {
-                    GUILayout.BeginHorizontal(GUILayout.Width(455));
-
-                    _editor.script.gameObjects[i].GameObject = (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i].GameObject, typeof(GameObject), true);
-                    
-                    foreach (var preset in LabelManager.Presets)
-                    {
-                        var gameobjects = preset.gameObjects.Where(_o => _o != null);
-                        
-                        if (_editor.script != preset && gameobjects.Contains(_editor.script.gameObjects[i]))
-                        {
-                            _editor.script.gameObjects[i] = null;
-                        }
-                    }
-                    
-                    if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
-                    {
-                        if( _editor.script.gameObjects.Contains(_editor.script.gameObjects[i])) _editor.script.gameObjects.Remove(_editor.script.gameObjects[i]);    
-                    }
-                    
-                    GUILayout.EndHorizontal();
-                }
+                RenderGameObjects(_editor);
 
                 break;
             }
         }
 
         EditorGUILayout.EndVertical();
+    }
+
+    private void RenderGameObjects(LabelColorPresetEditor _editor)
+    {
+        GUILayout.BeginHorizontal(GUILayout.Width(460));
+
+        EditorGUILayout.LabelField($"GameObjects Count = {_editor.script.gameObjects.Count}");
+        
+        if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
+        {
+            _editor.script.gameObjects.Add(new ObjectIDDictionary());
+        }
+
+        GUILayout.EndHorizontal();
+
+        gameObjectsScrollPos = GUILayout.BeginScrollView(gameObjectsScrollPos, false, false);
+
+        for (int i = 0; i < _editor.script.gameObjects.Count; i++)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Width(460));
+
+            _editor.script.gameObjects[i].GameObject =
+                (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i].GameObject, typeof(GameObject), true);
+
+            foreach (var preset in LabelManager.Presets)
+            {
+                var gameObjects = preset.gameObjects.Where(_o => _o != null);
+
+                if (_editor.script != preset && gameObjects.Contains(_editor.script.gameObjects[i]))
+                {
+                    _editor.script.gameObjects[i] = null;
+                }
+            }
+
+            if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                if (_editor.script.gameObjects.Contains(_editor.script.gameObjects[i]))
+                    _editor.script.gameObjects.Remove(_editor.script.gameObjects[i]);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.EndScrollView();
     }
 
     /// <summary>
@@ -279,15 +300,17 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         {
             for (int i = 0; i < LabelManager.Presets.Count; i++)
             {
-                GUILayout.BeginHorizontal();
+                GUILayout.BeginHorizontal(GUILayout.Width(220));
             
                 GUI.color = LabelManager.Presets[i].textColor;
-                
-                
-                if (GUILayout.Button(LabelManager.Presets[i].name.Split("_")[1], GUILayout.Width(200)))
+
+                if (GUILayout.Button(LabelManager.Presets[i].name.Split("_")[1], GUILayout.Width(180)))
                 {
                     selectedPreset = LabelManager.Presets[i];
                 }
+                
+                LabelManager.Presets[i].isActive = GUILayout.Toggle(LabelManager.Presets[i].isActive, "");
+
                 GUI.color = Color.red;
 
                 if (GUILayout.Button("X" , GUILayout.Width(20)))
@@ -323,6 +346,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             label.backgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
             label.inactiveBackgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
 
+            label.tooltips = new List<ImageTooltip>();
             label.gameObjects = new List<ObjectIDDictionary>();
             
             LabelManager.AddPreset(label);

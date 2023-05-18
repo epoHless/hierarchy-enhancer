@@ -82,26 +82,18 @@ public class LabelColorPresetEditor : Editor
                 LabelManager.AddPreset(script);
             }
         }
-        else
-        {
-            if (GUILayout.Button("Remove From Presets"))
-            {
-                LabelManager.RemovePreset(script);
-            }
-        }
     }
 
     public void ShowCustomInactiveColors()
     {
-        EditorGUIUtility.labelWidth = 160;
         script.useCustomInactiveColors = EditorGUILayout.Toggle("Use Custom Inactive Colors", script.useCustomInactiveColors);
 
         if (script.useCustomInactiveColors)
         {
-            // EditorGUI.indentLevel++;
             EditorGUILayout.Space(10);
 
             EditorGUILayout.BeginHorizontal();
+            
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Text Color", labelStyle);
             script.inactiveTextColor = EditorGUILayout.ColorField(script.inactiveTextColor);
@@ -111,8 +103,8 @@ public class LabelColorPresetEditor : Editor
             EditorGUILayout.LabelField("Background Color", labelStyle);
             script.inactiveBackgroundColor = EditorGUILayout.ColorField(script.inactiveBackgroundColor);
             EditorGUILayout.EndVertical();
+            
             EditorGUILayout.EndHorizontal();
-            // EditorGUI.indentLevel--;
         }
     }
 
@@ -150,7 +142,7 @@ public class LabelColorPresetEditor : Editor
 
     public void ShowIdentifierIcon()
     {
-        EditorGUILayout.BeginHorizontal();
+        GUILayout.BeginHorizontal(GUILayout.Width(450));
 
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Icon", labelStyle);
