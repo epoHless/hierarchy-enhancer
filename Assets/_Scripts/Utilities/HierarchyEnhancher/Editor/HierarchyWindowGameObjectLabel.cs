@@ -27,9 +27,9 @@ public static class HierarchyWindowGameObjectLabel
 
         foreach (var preset in LabelManager.Presets)
         {
-            if (content.text.StartsWith(preset.identifier))
+            if (/*content.text.StartsWith(preset.identifier)*/ gameObject != null && preset.gameObjects.Contains(gameObject))
             {
-                string text = content.text.Remove(0,preset.identifier.Length);
+                string text = content.text/*.Remove(0,preset.identifier.Length)*/;
 
                 if(gameObject)
                 {
@@ -41,11 +41,13 @@ public static class HierarchyWindowGameObjectLabel
         }
     }
 
+    #region Render Methods
+
     private static void RenderFocusButton(Rect _selectionRect, GameObject _gameObject)
     {
         if (!LabelManager.ShowFocusButton) return;
         
-        if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15), new GUIContent(){ tooltip = "Click to focus"}))
+        if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15), new GUIContent(){ tooltip = "Click to focus"}, GUIStyle.none))
         {
             Selection.activeObject = _gameObject;
             SceneView.FrameLastActiveSceneView();
@@ -65,43 +67,39 @@ public static class HierarchyWindowGameObjectLabel
     {
         GUI.Label(new Rect(_selectionRect.xMin + 16, _selectionRect.yMin, _selectionRect.width, _selectionRect.height), _text, SetStylePreset(_preset, _instanceID));
         
-        if (_content.image != null && _preset.icon)
+        RenderGameObjectToggle(_selectionRect, _gameObject);
+        RenderFocusButton(_selectionRect, _gameObject);
+
+        if(_preset.icon)
         {
-            GUI.DrawTexture(new Rect(_selectionRect.xMax - 20, _selectionRect.yMin, 20, 16),
-                HierarchyUtilities.DrawCube(1, 1,
-                    EditorUtility.InstanceIDToObject(_instanceID) == Selection.activeObject ? LabelManager.SelectedColor : LabelManager.UnselectedColor));
+            GUI.Label(new Rect(_selectionRect.xMin, _selectionRect.yMin + 1, 15, 15), GUIContent.none, SetStylePreset(_preset, _instanceID));
+            GUI.DrawTexture(new Rect(_selectionRect.xMin, _selectionRect.yMin + 1, 15, 15), _preset.icon);
+        }
 
-            RenderGameObjectToggle(_selectionRect, _gameObject);
-            RenderFocusButton(_selectionRect, _gameObject);
-
-            int offset = 32;
+        int offset = LabelManager.ShowToggleButton ? 32 : 16;
             
-            for (int i = 0; i < _preset.tooltips.Count; i++)
-            {
-                if(!_preset.tooltips[i].icon) continue;
+        for (int i = 0; i < _preset.tooltips.Count; i++)
+        {
+            if(!_preset.tooltips[i].icon) continue;
                 
-                if (GUI.Button(new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15), //opens the info panel
-                        new GUIContent(_preset.tooltips[i].icon,_preset.tooltips[i].tooltip), _preset.tooltips[i].info != String.Empty ? GUIStyle.none : 
-                            new GUIStyle()
-                            {
-                                normal = new GUIStyleState()
-                                
-                            }))
-                {
-                    var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
-                    infoWindow.Open(_preset, i);
-                }
-
-                var iconRect = new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15);
-                GUI.DrawTexture(iconRect, _preset.tooltips[i].icon);
-
-                offset += 16;
+            if (GUI.Button(new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15), //opens the info panel
+                    new GUIContent(_preset.tooltips[i].icon,_preset.tooltips[i].tooltip), GUIStyle.none))
+            {
+                var infoWindow = ScriptableObject.CreateInstance<LabelInfoEditorWindow>();
+                infoWindow.Open(_preset, i);
             }
+
+            var iconRect = new Rect(_selectionRect.xMax - offset, _selectionRect.yMin, 15, 15);
+            GUI.DrawTexture(iconRect, _preset.tooltips[i].icon);
+
+            offset += 16;
         }
     }
 
     private static void RenderLines(Rect _selectionRect, GameObject _gameObject, Color _color)
     {
+        if (!LabelManager.ShowHierarchyLines) return;
+        
         if(_gameObject.transform.childCount > 0)
         {
             DrawLine(_selectionRect, _color, 7,7, - 24.5f, 5);
@@ -132,10 +130,7 @@ public static class HierarchyWindowGameObjectLabel
             HierarchyUtilities.DrawCube(1, 1, _color));
     }
 
-    private static bool IsGameObjectEnabled(int _instanceID)
-    {
-        return EditorUtility.GetObjectEnabled(EditorUtility.InstanceIDToObject(_instanceID)) != 0;
-    }
+    #endregion
     
     private static int GetParentCount(GameObject _gameObject)
     {
@@ -153,23 +148,27 @@ public static class HierarchyWindowGameObjectLabel
 
     private static GUIStyle SetStylePreset(HierarchyLabelPreset _preset, int _instanceID)
     {
-        GUIStyle style = new GUIStyle();
-
-        var normalStyleState = IsGameObjectEnabled(_instanceID) ? new GUIStyleState
+        Color color = EditorUtility.InstanceIDToObject(_instanceID) != Selection.activeObject
+            ? LabelManager.UnselectedColor
+            : LabelManager.SelectedColor;
+        
+        GUIStyle style = new GUIStyle
         {
-            background = EditorUtility.InstanceIDToObject(_instanceID) != Selection.activeObject ? HierarchyUtilities.DrawCube(1, 1, _preset.backgroundColor) : HierarchyUtilities.DrawCube(1, 1, LabelManager.SelectedColor),
-            textColor = _preset.textColor
-        } : new GUIStyleState
-        {
-            background = EditorUtility.InstanceIDToObject(_instanceID) != Selection.activeObject ? HierarchyUtilities.DrawCube(1, 1, _preset.inactiveBackgroundColor) : HierarchyUtilities.DrawCube(1, 1, LabelManager.SelectedColor),
-            textColor = _preset.useCustomInactiveColors ? _preset.inactiveTextColor : HierarchyUtilities.ChangeColorBrightness(_preset.textColor, 0.45f)
+            normal = new GUIStyleState()
+            {
+                background = HierarchyUtilities.DrawCube(1, 1,color),
+                textColor = _preset.textColor
+            },
+            hover = new GUIStyleState()
+            {
+                background = HierarchyUtilities.DrawCube(1, 1, LabelManager.HoveredColor),
+                textColor = _preset.textColor
+            },
+            
+            fontStyle = _preset.fontStyle,
+            alignment = _preset.alignment
         };
 
-        style.normal = normalStyleState;
-        
-        style.fontStyle = _preset.fontStyle;
-        style.alignment = _preset.alignment;
-        
         return style;
     }
 }

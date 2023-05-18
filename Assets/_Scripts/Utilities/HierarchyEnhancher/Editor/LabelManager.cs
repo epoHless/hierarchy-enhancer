@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Windows;
 
 [InitializeOnLoad]
 public static class LabelManager
 {
-    public static string LabelsDirectory { get; private set; }
+    public static string LabelsDirectory =>
+        PlayerPrefs.HasKey("LabelDirectory") ? PlayerPrefs.GetString("LabelDirectory") : null;
 
     public static List<HierarchyLabelPreset> Presets = new List<HierarchyLabelPreset>();
 
-    public static readonly Color SelectedColor = new Color(44f / 255f, 93f / 255f, 135f / 255f, 1f);
-    public static readonly Color UnselectedColor = new Color(56f / 255f, 56f / 255f, 56f / 255f);
+    public static readonly Color SelectedColor = new (0.17f, 0.36f, 0.53f, 1f);
+    public static readonly Color UnselectedColor = new(0.22f, 0.22f, 0.22f, 1f);
+    public static readonly Color HoveredColor = new (0.27f, 0.27f, 0.27f, 1f);
 
-    public static bool ShowFocusButton;
-    public static bool ShowToggleButton;
+    public static bool ShowFocusButton = true;
+    public static bool ShowToggleButton = true;
+    public static bool ShowHierarchyLines = true;
     
     static LabelManager()
     {
@@ -23,23 +25,25 @@ public static class LabelManager
     
     public static void FetchLabels()
     {
-        if (!Directory.Exists($"{Application.dataPath}/HierarchyLabels"))
-            AssetDatabase.CreateFolder("Assets", "HierarchyLabels");
-        
-        LabelsDirectory = "Assets/HierarchyLabels/";
-
-        var assets = AssetDatabase.FindAssets("", new[] { LabelsDirectory });
-
-        Presets = new List<HierarchyLabelPreset>();
-        
-        foreach (var asset in assets)
+        if (string.IsNullOrEmpty(LabelsDirectory))
         {
-            var path = AssetDatabase.GUIDToAssetPath(asset);
-            var item = AssetDatabase.LoadAssetAtPath(path, typeof(HierarchyLabelPreset)) as HierarchyLabelPreset;
+            Debug.LogWarning("There is no label directory selected! Pick one in the Label Editor -> Options");
+        }
+        else
+        {
+            var assets = AssetDatabase.FindAssets("", new[] { LabelsDirectory });
 
-            if (item)
+            Presets = new List<HierarchyLabelPreset>();
+        
+            foreach (var asset in assets)
             {
-                AddPreset(item);
+                var path = AssetDatabase.GUIDToAssetPath(asset);
+                var item = AssetDatabase.LoadAssetAtPath(path, typeof(HierarchyLabelPreset)) as HierarchyLabelPreset;
+
+                if (item)
+                {
+                    AddPreset(item);
+                }
             }
         }
     }

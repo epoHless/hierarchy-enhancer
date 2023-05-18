@@ -5,11 +5,11 @@ using UnityEngine;
 [CustomEditor(typeof(HierarchyLabelPreset))]
 public class LabelColorPresetEditor : Editor
 {
-    private HierarchyLabelPreset script;
+    public HierarchyLabelPreset script;
     private GUIStyle labelStyle;
 
     public bool showBase = false;
-    
+
     private void Awake()
     {
         script = (HierarchyLabelPreset)target;
@@ -38,7 +38,7 @@ public class LabelColorPresetEditor : Editor
         else
         {
             EditorGUILayout.BeginHorizontal();
-        
+
             ShowIdentifierIcon();
 
             EditorGUILayout.EndHorizontal();
@@ -153,14 +153,10 @@ public class LabelColorPresetEditor : Editor
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Identifier", labelStyle);
-        script.identifier = EditorGUILayout.TextField(script.identifier);
-        EditorGUILayout.EndVertical();
-
-        EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Icon", labelStyle);
         script.icon = EditorGUILayout.ObjectField(script.icon, typeof(Texture), true) as Texture;
         EditorGUILayout.EndVertical();
+        
         EditorGUILayout.EndHorizontal();
     }
 }

@@ -31,6 +31,5 @@ MonoBehaviour:
   - tooltip: Align
     icon: {fileID: 2800000, guid: ca51b19024094d1b87f3e07edb0a75fb, type: 3}
     info: aling info
-  - tooltip: Error
-    icon: {fileID: 2800000, guid: 65f0e363b74cf5845ab8c3fbc14f39ac, type: 3}
-    info: There is a bug in the player
+  gameObjects:
+  - {fileID: 0}

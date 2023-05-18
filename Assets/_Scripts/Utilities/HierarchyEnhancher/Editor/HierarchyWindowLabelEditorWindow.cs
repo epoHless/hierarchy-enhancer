@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -29,8 +30,13 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
     private void Awake()
     {
+        InitUI();
+    }
+
+    private void InitUI()
+    {
         Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
-        
+
         sidebarStyle = new GUIStyle()
         {
             hover = new GUIStyleState()
@@ -39,14 +45,14 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             },
             normal = new GUIStyleState()
             {
-                background = HierarchyUtilities.DrawCube(1,1, Color.gray)
+                background = HierarchyUtilities.DrawCube(1, 1, Color.gray)
             }
         };
 
         minSize = new Vector2(710, 400);
         maxSize = minSize;
 
-        if(Presets.Count > 0) selectedPreset = Presets[0];
+        if (Presets.Count > 0) selectedPreset = Presets[0];
     }
 
     private void OnGUI()
@@ -134,12 +140,24 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
                 LabelManager.ShowFocusButton = GUILayout.Toggle(LabelManager.ShowFocusButton, "");
                 GUILayout.Label("Show GameObject Toggle Button");
                 LabelManager.ShowToggleButton = GUILayout.Toggle(LabelManager.ShowToggleButton, "");
+                GUILayout.Label("Show Hierarchy Lines");
+                LabelManager.ShowHierarchyLines = GUILayout.Toggle(LabelManager.ShowHierarchyLines, "");
+
+                if (GUILayout.Button("Change Default Directory"))
+                {
+                    var directory = EditorUtility.OpenFolderPanel("Change Directory", "", "");
+
+                    directory = directory.Substring(directory.IndexOf("Assets"));
+                    PlayerPrefs.SetString("LabelDirectory", directory);
+                    
+                    LabelManager.FetchLabels();
+                    InitUI();
+                }
+                
                 break;
             }
         }
-        
-        
-        
+
         EditorGUILayout.EndVertical();
         
         EditorApplication.RepaintHierarchyWindow();
@@ -159,7 +177,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             fontSize = 14
         });
 
-        labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "Icons & Info" });
+        labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "Icons & Info", "GameObjects" });
 
         GUILayout.EndHorizontal();
         
@@ -198,6 +216,48 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
                     GUILayout.EndVertical();
                 }
                 
+                break;
+            }
+
+            case 2:
+            {
+                GUILayout.Space(20);
+                
+                GUILayout.BeginHorizontal(GUILayout.Width(455));
+
+                EditorGUILayout.LabelField($"GameObjects Count = {_editor.script.gameObjects.Count}");
+                
+                if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
+                {
+                    _editor.script.gameObjects.Add(null);    
+                }
+                
+                GUILayout.EndHorizontal();
+
+                for (int i = 0; i < _editor.script.gameObjects.Count; i++)
+                {
+                    GUILayout.BeginHorizontal(GUILayout.Width(455));
+
+                    _editor.script.gameObjects[i] = (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i], typeof(GameObject), true);
+                    
+                    foreach (var preset in Presets)
+                    {
+                        var gameobjects = preset.gameObjects.Where(_o => _o != null);
+                        
+                        if (_editor.script != preset && gameobjects.Contains(_editor.script.gameObjects[i]))
+                        {
+                            _editor.script.gameObjects[i] = null;
+                        }
+                    }
+                    
+                    if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+                    {
+                        if( _editor.script.gameObjects.Contains(_editor.script.gameObjects[i])) _editor.script.gameObjects.Remove(_editor.script.gameObjects[i]);    
+                    }
+                    
+                    GUILayout.EndHorizontal();
+                }
+
                 break;
             }
         }
