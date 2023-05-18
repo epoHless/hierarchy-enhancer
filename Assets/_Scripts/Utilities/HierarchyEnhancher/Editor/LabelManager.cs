@@ -20,7 +20,7 @@ public static class LabelManager
     
     static LabelManager()
     {
-        AssemblyReloadEvents.afterAssemblyReload += FetchLabels;
+        EditorApplication.delayCall += FetchLabels;
     }
     
     public static void FetchLabels()
@@ -31,7 +31,7 @@ public static class LabelManager
         }
         else
         {
-            var assets = AssetDatabase.FindAssets("", new[] { LabelsDirectory });
+            var assets = AssetDatabase.FindAssets("t:HierarchyLabelPreset", new[] { LabelsDirectory });
 
             Presets = new List<HierarchyLabelPreset>();
         
@@ -43,6 +43,11 @@ public static class LabelManager
                 if (item)
                 {
                     AddPreset(item);
+
+                    foreach (var dictionary in item.gameObjects)
+                    {
+                        dictionary.GameObject = EditorUtility.InstanceIDToObject(dictionary.ID) as GameObject;
+                    }
                 }
             }
         }

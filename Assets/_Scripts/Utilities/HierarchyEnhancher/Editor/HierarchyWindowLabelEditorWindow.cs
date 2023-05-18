@@ -8,7 +8,6 @@ using UnityEngine;
 public class HierarchyWindowLabelEditorWindow : EditorWindow
 {
     private HierarchyLabelPreset selectedPreset = null;
-    private List<HierarchyLabelPreset> Presets = new List<HierarchyLabelPreset>();
 
     private GUIStyle sidebarStyle;
     
@@ -35,8 +34,6 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
     private void InitUI()
     {
-        Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
-
         sidebarStyle = new GUIStyle()
         {
             hover = new GUIStyleState()
@@ -52,7 +49,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         minSize = new Vector2(710, 400);
         maxSize = minSize;
 
-        if (Presets.Count > 0) selectedPreset = Presets[0];
+        if(LabelManager.Presets.Count > 0) selectedPreset = LabelManager.Presets[0];
     }
 
     private void OnGUI()
@@ -73,29 +70,28 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         
                 GUILayout.FlexibleSpace();
 
-                if (Presets.Count > 0)
+                if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
                 {
-                    if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
-                    {
-                        LabelManager.FetchLabels();
-                        Presets = new List<HierarchyLabelPreset>(LabelManager.Presets);
-                    }
-        
+                    LabelManager.FetchLabels();
+                }
+                
+                if (LabelManager.Presets.Count > 0)
+                {
                     GUILayout.BeginHorizontal();
 
                     if (GUILayout.Button("Add All", GUILayout.Width(110)))
                     {
-                        for (int i = 0; i < Presets.Count; i++)
+                        for (int i = 0; i < LabelManager.Presets.Count; i++)
                         {
-                            AddPreset(Presets[i]);
+                            LabelManager.AddPreset(LabelManager.Presets[i]);
                         }
                     }
         
                     if (GUILayout.Button("Remove All", GUILayout.Width(110)))
                     {
-                        for (int i = 0; i < Presets.Count; i++)
+                        for (int i = 0; i < LabelManager.Presets.Count; i++)
                         {
-                            RemovePreset(Presets[i]);
+                            LabelManager.RemovePreset(LabelManager.Presets[i]);
                         }
                     }
 
@@ -186,8 +182,8 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             case 0 :
             {
                 _editor.showBase = false;
+                
                 GUILayout.Space(10);
-
                 _editor!.ShowIdentifierIcon();
                 GUILayout.Space(10);
                 _editor!.ShowFontStyleAlignment();
@@ -240,7 +236,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
                     _editor.script.gameObjects[i].GameObject = (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i].GameObject, typeof(GameObject), true);
                     
-                    foreach (var preset in Presets)
+                    foreach (var preset in LabelManager.Presets)
                     {
                         var gameobjects = preset.gameObjects.Where(_o => _o != null);
                         
@@ -274,28 +270,29 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         
         var guiColor = GUI.color;
 
-        if (Presets.Count == 0)
+        if (LabelManager.Presets.Count == 0)
         {
             GUILayout.Label("No Presets were found!");
             GUILayout.Label("Click Add Label to create one...");
         }
         else
         {
-            for (int i = 0; i < Presets.Count; i++)
+            for (int i = 0; i < LabelManager.Presets.Count; i++)
             {
                 GUILayout.BeginHorizontal();
             
-                GUI.color = Presets[i].textColor;
-
-                if (GUILayout.Button(Presets[i].name.Split("_")[1], GUILayout.Width(200)))
+                GUI.color = LabelManager.Presets[i].textColor;
+                
+                
+                if (GUILayout.Button(LabelManager.Presets[i].name.Split("_")[1], GUILayout.Width(200)))
                 {
-                    selectedPreset = Presets[i];
+                    selectedPreset = LabelManager.Presets[i];
                 }
                 GUI.color = Color.red;
 
                 if (GUILayout.Button("X" , GUILayout.Width(20)))
                 {
-                    DeleteLabel(Presets[i]);
+                    DeleteLabel(LabelManager.Presets[i]);
                 }
 
                 GUI.color = guiColor;
@@ -328,7 +325,6 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
             label.gameObjects = new List<ObjectIDDictionary>();
             
-            AddPreset(label);
             LabelManager.AddPreset(label);
             EditorApplication.RepaintHierarchyWindow();
 
@@ -352,7 +348,6 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
     private void DeleteLabel(HierarchyLabelPreset _label)
     {
         LabelManager.RemovePreset(_label);
-        RemovePreset(_label);
 
         string assetPath = String.Concat(LabelManager.LabelsDirectory, $"/{_label.name}.asset");
 
@@ -362,35 +357,12 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            selectedPreset = Presets[0];
-            Presets.Remove(_label);
+            selectedPreset = LabelManager.Presets[0];
+            LabelManager.Presets.Remove(_label);
         }
         else
         {
             EditorUtility.DisplayDialog("ERROR", $"Could not find asset at path: {assetPath}", "OK");
         }
-    }
-
-    /// <summary>
-    /// Add a preset to the list of presets
-    /// </summary>
-    /// <param name="_preset"></param>
-    private void AddPreset(HierarchyLabelPreset _preset)
-    {
-        if (!Presets.Contains(_preset))
-        {
-            Presets.Add(_preset);
-        }
-        
-        LabelManager.AddPreset(_preset);
-    }
-    
-    /// <summary>
-    /// Remove a preset from the list of presets
-    /// </summary>
-    /// <param name="_preset"></param>
-    private void RemovePreset(HierarchyLabelPreset _preset)
-    {
-        LabelManager.RemovePreset(_preset);
     }
 }
