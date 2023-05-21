@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 451e477c86b24a75b6744f5ec299feed, type: 3}
   m_Name: LabelPreset_Player
   m_EditorClassIdentifier: 
-  identifier: P_
   icon: {fileID: 2800000, guid: 8e3ec2dfd58b79842aa78376678a9a05, type: 3}
   fontStyle: 1
   alignment: 3
   textColor: {r: 1, g: 0.3537736, b: 0.5726627, a: 1}
   inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomInactiveColors: 0
-  backgroundColor: {r: 0.9757231, g: 1, b: 0.08962262, a: 0.5019608}
+  useCustomBackground: 0
+  backgroundColor: {r: 1, g: 0.3537736, b: 0.5726627, a: 1}
   inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
   tooltips:
   - tooltip: File
@@ -32,6 +32,5 @@ MonoBehaviour:
     icon: {fileID: 2800000, guid: ca51b19024094d1b87f3e07edb0a75fb, type: 3}
     info: aling info
   gameObjects:
-  - ID: 24538
-  - ID: -3587336
+  - ID: 24462
   isActive: 1

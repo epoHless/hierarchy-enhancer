@@ -8,6 +8,8 @@ public class LabelColorPresetEditor : Editor
     public HierarchyLabelPreset script;
     private GUIStyle labelStyle;
 
+    public bool useCustomBGColor = false;
+
     private void Awake()
     {
         script = (HierarchyLabelPreset)target;
@@ -95,13 +97,24 @@ public class LabelColorPresetEditor : Editor
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Text Color", labelStyle);
-        script.textColor = EditorGUILayout.ColorField(script.textColor);
+        
+        EditorGUILayout.LabelField("Color", labelStyle);
+        script.textColor = EditorGUILayout.ColorField(script.textColor, GUILayout.Width(220));
         EditorGUILayout.EndVertical();
-
+        
         EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Background Color", labelStyle);
-        script.backgroundColor = EditorGUILayout.ColorField(script.backgroundColor);
+        
+        script.useCustomBackground = EditorGUILayout.Toggle("Custom BG", script.useCustomBackground);
+        if (script.useCustomBackground)
+        {
+            EditorGUILayout.LabelField("Background Color", labelStyle);
+            script.backgroundColor = EditorGUILayout.ColorField(script.backgroundColor, GUILayout.Width(220));
+        }
+        else
+        {
+            script.backgroundColor = script.textColor;
+        }
+        
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
     }

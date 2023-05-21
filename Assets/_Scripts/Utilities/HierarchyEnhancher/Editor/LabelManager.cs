@@ -51,6 +51,17 @@ public static class LabelManager
                 }
             }
         }
+
+        foreach (var preset in Presets)
+        {
+            foreach (var gameObject in preset.gameObjects)
+            {
+                if (!gameObject.GameObject)
+                {
+                    gameObject.GameObject = EditorUtility.InstanceIDToObject(gameObject.ID) as GameObject;
+                }
+            }
+        }
     }
     
     public static void AddPreset(HierarchyLabelPreset _preset)

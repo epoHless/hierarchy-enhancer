@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class HierarchyLabelPreset : ScriptableObject
 {
-    [HideInInspector] public string identifier;
-
     [HideInInspector] public Texture icon;
     [HideInInspector] public FontStyle fontStyle;
     [HideInInspector] public TextAnchor alignment = TextAnchor.MiddleLeft;
@@ -15,6 +13,7 @@ public class HierarchyLabelPreset : ScriptableObject
     [HideInInspector] public Color inactiveTextColor;
 
     [HideInInspector] public bool useCustomInactiveColors;
+    [HideInInspector] public bool useCustomBackground;
     [HideInInspector] public Color backgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
     [HideInInspector] public Color inactiveBackgroundColor = new (0.2196079f, 0.2196079f, 0.2196079f, 1);
 

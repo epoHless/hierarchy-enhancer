@@ -49,6 +49,9 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         {
             case 0: //labels panel
             {
+                minSize = new Vector2(710, 400);
+                maxSize = minSize;
+
                 EditorGUILayout.BeginHorizontal(); //1
 
                 EditorGUILayout.BeginVertical(); //2
@@ -57,32 +60,11 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         
                 GUILayout.FlexibleSpace();
 
+                GUI.DrawTexture(new Rect(new Vector2(0, 357), new Vector2(230, 3)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
+
                 if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
                 {
                     LabelManager.FetchLabels();
-                }
-                
-                if (LabelManager.Presets.Count > 0)
-                {
-                    GUILayout.BeginHorizontal();
-
-                    if (GUILayout.Button("Add All", GUILayout.Width(110)))
-                    {
-                        for (int i = 0; i < LabelManager.Presets.Count; i++)
-                        {
-                            LabelManager.AddPreset(LabelManager.Presets[i]);
-                        }
-                    }
-        
-                    if (GUILayout.Button("Remove All", GUILayout.Width(110)))
-                    {
-                        for (int i = 0; i < LabelManager.Presets.Count; i++)
-                        {
-                            LabelManager.RemovePreset(LabelManager.Presets[i]);
-                        }
-                    }
-
-                    GUILayout.EndHorizontal();
                 }
 
                 GUILayout.BeginHorizontal();
@@ -107,7 +89,7 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
                     GUILayout.Space(-20);
             
-                    GUI.DrawTexture(new Rect(new Vector2(230, 0), new Vector2(3, 400)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
+                    GUI.DrawTexture(new Rect(new Vector2(230, 0), new Vector2(3, 410)), HierarchyUtilities.DrawCube(1,1, new Color(0.16f, 0.16f, 0.16f, 1f)));
             
                     RenderPreset(editor);
                 }
@@ -119,17 +101,23 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
 
             case 1: //options panel
             {
-                GUILayout.Label("Show GameObject Focus Button");
-                LabelManager.ShowFocusButton = GUILayout.Toggle(LabelManager.ShowFocusButton, "");
-                GUILayout.Label("Show GameObject Toggle Button");
-                LabelManager.ShowToggleButton = GUILayout.Toggle(LabelManager.ShowToggleButton, "");
-                GUILayout.Label("Show Hierarchy Lines");
-                LabelManager.ShowHierarchyLines = GUILayout.Toggle(LabelManager.ShowHierarchyLines, "");
+                minSize = new Vector2(230, 400);
+                maxSize = minSize;
+                
+                GUILayout.Space(10);
+                
+                LabelManager.ShowFocusButton = GUILayout.Toggle(LabelManager.ShowFocusButton, " Show GameObject Focus Button");
+                LabelManager.ShowToggleButton = GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
+                LabelManager.ShowHierarchyLines = GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Lines");
 
-                if (GUILayout.Button("Change Default Directory"))
+                GUILayout.FlexibleSpace();
+                
+                if (GUILayout.Button("Change Default Directory", GUILayout.Width(220)))
                 {
                     var directory = EditorUtility.OpenFolderPanel("Change Directory", "", "");
 
+                    if (string.IsNullOrEmpty(directory)) return;
+                    
                     directory = directory.Substring(directory.IndexOf("Assets"));
                     PlayerPrefs.SetString("LabelDirectory", directory);
                     
@@ -339,10 +327,10 @@ public class HierarchyWindowLabelEditorWindow : EditorWindow
         {
             AssetDatabase.CreateAsset(label, labelPath);
             
-            label.identifier = labelName;
             label.textColor = Color.white;
             label.inactiveTextColor = Color.white;
-            label.backgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
+
+            label.backgroundColor = label.textColor;
             label.inactiveBackgroundColor = new Color(0.2196079f, 0.2196079f, 0.2196079f, 1);
 
             label.tooltips = new List<ImageTooltip>();

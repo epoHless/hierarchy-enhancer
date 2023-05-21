@@ -33,4 +33,28 @@ public static class HierarchyUtilities
     {
         return new Color(_color.r * _correctionFactor, _color.g * _correctionFactor, _color.b * _correctionFactor, 1f);
     }
+    
+    public static Texture2D CrateGradientTexture(int _width, int _height, Color _leftColor, Color _rightColor)
+    {
+        Texture2D texture2D = new Texture2D(_width, _height, TextureFormat.ARGB32, false)
+        {
+            hideFlags = HideFlags.HideAndDontSave
+        };
+        
+        Color[] array = new Color[_width * _height];
+
+        for (int i = 0; i < _width; i++)
+        {
+            Color color = Color.Lerp(_leftColor, _rightColor, (float)i /(_width - 1));
+            for (int j = 0; j < _height; j++)
+            {
+                array[j * _width + i] = color;
+            }
+        }
+        
+        texture2D.SetPixels(array);
+        texture2D.wrapMode = TextureWrapMode.Clamp;
+        texture2D.Apply();
+        return texture2D;
+    }
 }

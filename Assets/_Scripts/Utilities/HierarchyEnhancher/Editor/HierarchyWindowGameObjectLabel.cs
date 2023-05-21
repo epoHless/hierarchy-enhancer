@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 #if UNITY_EDITOR
 
 [InitializeOnLoad]
 public static class HierarchyWindowGameObjectLabel
 {
+    private static bool drawLines = true;
+    
     static HierarchyWindowGameObjectLabel()
     {
         EditorApplication.hierarchyWindowItemOnGUI += HandleHierarchyWindowItemOnGUI;
+        EditorApplication.hierarchyChanged += DrawHierarchyLines;
     }
 
     static void HandleHierarchyWindowItemOnGUI(int _instanceID, Rect _selectionRect)
@@ -37,12 +42,17 @@ public static class HierarchyWindowGameObjectLabel
 
                 if (gameObject)
                 {
-                    RenderLines(_selectionRect, gameObject, preset.textColor);
+                    RenderLines(_selectionRect, gameObject, preset.backgroundColor);
                 }
 
-                RenderGUI(_instanceID, _selectionRect, text, preset, content, gameObject);
+                RenderGUI(_instanceID, _selectionRect, text, preset, gameObject);
             }
         }
+    }
+    
+    private static void DrawHierarchyLines()
+    {
+        drawLines = true;
     }
 
     #region Render Methods
@@ -59,16 +69,15 @@ public static class HierarchyWindowGameObjectLabel
         }
     }
 
-    private static void RenderGameObjectToggle(Rect _selectionRect, GameObject gameObject)
+    private static void RenderGameObjectToggle(Rect _selectionRect, GameObject _gameObject)
     {
         if (!LabelManager.ShowToggleButton) return;
 
-        gameObject.SetActive(GUI.Toggle(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin - 1, 15, 15),
-            gameObject.activeSelf, GUIContent.none));
+        _gameObject.SetActive(GUI.Toggle(new Rect(_selectionRect.xMax - 16, _selectionRect.yMin - 1, 15, 15),
+            _gameObject.activeSelf, GUIContent.none));
     }
 
-    private static void RenderGUI(int _instanceID, Rect _selectionRect, string _text, HierarchyLabelPreset _preset,
-        GUIContent _content, GameObject _gameObject)
+    private static void RenderGUI(int _instanceID, Rect _selectionRect, string _text, HierarchyLabelPreset _preset, GameObject _gameObject)
     {
         GUI.DrawTexture(_selectionRect, HierarchyUtilities.DrawCube(1,1, LabelManager.UnselectedColor));
         
@@ -106,58 +115,62 @@ public static class HierarchyWindowGameObjectLabel
 
     private static void RenderLines(Rect _selectionRect, GameObject _gameObject, Color _color)
     {
-        if (!LabelManager.ShowHierarchyLines) return;
+        if (!LabelManager.ShowHierarchyLines && drawLines) return;
 
         if (_gameObject.transform.childCount > 0)
         {
-            DrawLine(_selectionRect, _color, 7, 7, -24.5f, 5);
+            DrawLine(_selectionRect, _color, 6, 6, -24.5f, 5);
         }
-
-        int parentCount = GetParentCount(_gameObject);
-
+        
+        var transforms = GetParentCount(_gameObject);
+        
         if (_gameObject.transform.parent != null)
         {
             if (_gameObject.transform.childCount == 0)
-                DrawLine(_selectionRect, _color, 30f, 1.5f, -35f, 7.45f);
+                DrawLine(_selectionRect, _color, 30f, 1f, -36f, 7.45f);
             else 
-                DrawLine(_selectionRect, _color, 15, 1.5f, -35, 7.45f);
-
-            for (int i = 0; i < parentCount; i++) //adds additional lines for nested objects
+                DrawLine(_selectionRect, _color, 17, 1f, -36, 7.45f);
+        
+            for (int i = 0; i < transforms.Count; i++) //adds additional lines for nested objects
             {
-                if (_gameObject.transform.parent &&
+                if (transforms[i] &&
                     _gameObject.transform.childCount == 0 &&
-                    _gameObject.transform.parent.GetChild(_gameObject.transform.parent.childCount - 1).gameObject ==
-                    _gameObject &&
-                    i <= _gameObject.transform.parent.childCount)
-                    DrawLine(_selectionRect, _color, 2, 8.5f, -36.5f - (14f * i));
+                    transforms[i].GetChild(transforms[i].childCount - 1).gameObject == _gameObject)
+                    DrawLine(_selectionRect, _color, 1, 8f, -36f - (14f * i));
                 else
-                    DrawLine(_selectionRect, _color, 2, 17, -36.5f - (14f * i));
-                
+                    DrawLine(_selectionRect, _color, 1, 16, -36f - (14f * i));
             }
         }
+
+        drawLines = false;
     }
 
     private static void DrawLine(Rect _selectionRect, Color _color, float _width, float _height, float _xOffset,
         float _yOffset = 0)
     {
-        GUI.DrawTexture(new Rect(_selectionRect.xMin + _xOffset, _selectionRect.yMin + _yOffset, _width, _height),
-            HierarchyUtilities.DrawCube(1, 1, _color));
+        EditorGUI.DrawRect(new Rect(_selectionRect.xMin + _xOffset, _selectionRect.yMin + _yOffset, _width, _height), _color);
     }
 
     #endregion
 
-    private static int GetParentCount(GameObject _gameObject)
+    private static List<Transform> GetParentCount(GameObject _gameObject)
     {
-        int count = 0;
+        List<Transform> parents = new List<Transform>();
+        
         Transform current = _gameObject.transform;
 
         while (current.parent != null)
         {
-            count++;
             current = current.parent;
+            parents.Add(current);
         }
 
-        return count;
+        return parents;
+    }
+    
+    private static bool IsGameObjectEnabled(int _instanceID)
+    {
+        return EditorUtility.GetObjectEnabled(EditorUtility.InstanceIDToObject(_instanceID)) == 1;
     }
 
     private static GUIStyle SetStylePreset(HierarchyLabelPreset _preset, int _instanceID, Rect _rect)
@@ -166,6 +179,12 @@ public static class HierarchyWindowGameObjectLabel
             ? _preset.backgroundColor
             : LabelManager.SelectedColor;
 
+        color = IsGameObjectEnabled(_instanceID) ? color : HierarchyUtilities.ChangeColorBrightness(color, .5f);
+
+        Color textColor = IsGameObjectEnabled(_instanceID)
+            ? _preset.textColor
+            : HierarchyUtilities.ChangeColorBrightness(_preset.textColor, .5f);
+        
         var colorFaded = color;
         colorFaded.a = 0;
 
@@ -173,13 +192,13 @@ public static class HierarchyWindowGameObjectLabel
         {
             normal = new GUIStyleState()
             {
-                background = CrateGradientTexture((int)_rect.width, (int)_rect.height, colorFaded, color),
-                textColor = _preset.textColor
+                background = HierarchyUtilities.CrateGradientTexture((int)_rect.width, (int)_rect.height, colorFaded, color),
+                textColor = textColor
             },
             hover = new GUIStyleState()
             {
                 background = HierarchyUtilities.DrawCube(1, 1, LabelManager.HoveredColor),
-                textColor = _preset.textColor
+                textColor = textColor
             },
 
             fontStyle = _preset.fontStyle,
@@ -187,30 +206,6 @@ public static class HierarchyWindowGameObjectLabel
         };
 
         return style;
-    }
-
-    private static Texture2D CrateGradientTexture(int _width, int _height, Color _leftColor, Color _rightColor)
-    {
-        Texture2D texture2D = new Texture2D(_width, _height, TextureFormat.ARGB32, false)
-        {
-            hideFlags = HideFlags.HideAndDontSave
-        };
-        
-        Color[] array = new Color[_width * _height];
-
-        for (int i = 0; i < _width; i++)
-        {
-            Color color = Color.Lerp(_leftColor, _rightColor, (float)i /(_width - 1));
-            for (int j = 0; j < _height; j++)
-            {
-                array[j * _width + i] = color;
-            }
-        }
-        
-        texture2D.SetPixels(array);
-        texture2D.wrapMode = TextureWrapMode.Clamp;
-        texture2D.Apply();
-        return texture2D;
     }
 }
 
