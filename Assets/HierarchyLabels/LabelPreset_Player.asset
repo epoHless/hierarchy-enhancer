@@ -12,25 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 451e477c86b24a75b6744f5ec299feed, type: 3}
   m_Name: LabelPreset_Player
   m_EditorClassIdentifier: 
-  icon: {fileID: 2800000, guid: 8e3ec2dfd58b79842aa78376678a9a05, type: 3}
-  fontStyle: 1
+  icon: {fileID: 2800000, guid: f0d1dc268f0a0f040a8abdfb7711bab0, type: 3}
+  fontStyle: 0
   alignment: 3
-  textColor: {r: 1, g: 0.3537736, b: 0.5726627, a: 1}
-  inactiveTextColor: {r: 1, g: 1, b: 1, a: 1}
-  useCustomInactiveColors: 0
+  textColor: {r: 1, g: 1, b: 1, a: 1}
   useCustomBackground: 0
-  backgroundColor: {r: 1, g: 0.3537736, b: 0.5726627, a: 1}
-  inactiveBackgroundColor: {r: 0.2196079, g: 0.2196079, b: 0.2196079, a: 1}
+  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
   tooltips:
-  - tooltip: File
-    icon: {fileID: 2800000, guid: c223e0c507e2c6549a2cb97441b62cbe, type: 3}
-    info: file info
-  - tooltip: Bones
-    icon: {fileID: 2800000, guid: f0f8ff8921b22a74a8c79d955ace248d, type: 3}
-    info: bones info
-  - tooltip: Align
-    icon: {fileID: 2800000, guid: ca51b19024094d1b87f3e07edb0a75fb, type: 3}
-    info: aling info
+  - tooltip: 
+    icon: {fileID: 2800000, guid: f0d1dc268f0a0f040a8abdfb7711bab0, type: 3}
+    info: 
   gameObjects:
-  - ID: 24462
+  - ID: 24514
   isActive: 1

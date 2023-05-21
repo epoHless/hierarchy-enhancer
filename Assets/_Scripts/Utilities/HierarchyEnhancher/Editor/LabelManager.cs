@@ -2,85 +2,114 @@
 using UnityEditor;
 using UnityEngine;
 
-[InitializeOnLoad]
-public static class LabelManager
+namespace HierarchyEnhancer
 {
-    public static string LabelsDirectory =>
-        PlayerPrefs.HasKey("LabelDirectory") ? PlayerPrefs.GetString("LabelDirectory") : null;
+    [InitializeOnLoad]
 
-    public static List<HierarchyLabelPreset> Presets = new List<HierarchyLabelPreset>();
-
-    public static readonly Color SelectedColor = new (0.17f, 0.36f, 0.53f, 1f);
-    public static readonly Color UnselectedColor = new(0.22f, 0.22f, 0.22f, 1f);
-    public static readonly Color HoveredColor = new (0.27f, 0.27f, 0.27f, 1f);
-
-    public static bool ShowFocusButton = true;
-    public static bool ShowToggleButton = true;
-    public static bool ShowHierarchyLines = true;
-    
-    static LabelManager()
+    internal static class LabelManager
     {
-        EditorApplication.delayCall += FetchLabels;
-    }
-    
-    public static void FetchLabels()
-    {
-        if (string.IsNullOrEmpty(LabelsDirectory))
-        {
-            Debug.LogWarning("There is no label directory selected! Pick one in the Label Editor -> Options");
-        }
-        else
-        {
-            var assets = AssetDatabase.FindAssets("t:HierarchyLabelPreset", new[] { LabelsDirectory });
+        internal static string LabelsDirectory =>
+            PlayerPrefs.HasKey("LabelDirectory") ? PlayerPrefs.GetString("LabelDirectory") : null;
 
-            Presets = new List<HierarchyLabelPreset>();
-        
-            foreach (var asset in assets)
+        internal static List<Label> Presets = new List<Label>();
+
+        internal static readonly Color SelectedColor = new(0.17f, 0.36f, 0.53f, 1f);
+        internal static readonly Color UnselectedColor = new(0.22f, 0.22f, 0.22f, 1f);
+        internal static readonly Color HoveredColor = new(0.27f, 0.27f, 0.27f, 1f);
+
+        internal static bool ShowFocusButton = true;
+        internal static bool ShowToggleButton = true;
+
+        private static bool _showHierarchyLines = true;
+        internal static bool ShowHierarchyLines
+        {
+            get => _showHierarchyLines;
+            set
             {
-                var path = AssetDatabase.GUIDToAssetPath(asset);
-                var item = AssetDatabase.LoadAssetAtPath(path, typeof(HierarchyLabelPreset)) as HierarchyLabelPreset;
+                _showHierarchyLines = value;
+                OnRequestLineDraw?.Invoke(_showHierarchyLines);
+            }
+        }
 
-                if (item)
+        internal delegate void Evt<T>(T _value);
+
+        internal static Evt<bool> OnRequestLineDraw;
+
+        static LabelManager()
+        {
+            EditorApplication.delayCall += FetchLabels;
+            EditorApplication.quitting += SaveAssets;
+        }
+
+        public static void FetchLabels()
+        {
+            if (string.IsNullOrEmpty(LabelsDirectory))
+            {
+                Debug.LogWarning("There is no label directory selected! Pick one in the Label Editor -> Options");
+            }
+            else
+            {
+                var assets = AssetDatabase.FindAssets($"t:{typeof(Label)}", new[] { LabelsDirectory });
+
+                Presets = new List<Label>();
+
+                foreach (var asset in assets)
                 {
-                    AddPreset(item);
+                    var path = AssetDatabase.GUIDToAssetPath(asset);
+                    var item = AssetDatabase.LoadAssetAtPath(path, typeof(Label)) as Label;
 
-                    foreach (var dictionary in item.gameObjects)
+                    if (item)
                     {
-                        dictionary.GameObject = EditorUtility.InstanceIDToObject(dictionary.ID) as GameObject;
+                        AddPreset(item);
+
+                        foreach (var dictionary in item.gameObjects)
+                        {
+                            dictionary.GameObject = EditorUtility.InstanceIDToObject(dictionary.ID) as GameObject;
+                        }
+                    }
+                }
+            }
+
+            foreach (var preset in Presets)
+            {
+                foreach (var gameObject in preset.gameObjects)
+                {
+                    if (!gameObject.GameObject)
+                    {
+                        gameObject.GameObject = EditorUtility.InstanceIDToObject(gameObject.ID) as GameObject;
                     }
                 }
             }
         }
-
-        foreach (var preset in Presets)
+        
+        private static void SaveAssets()
         {
-            foreach (var gameObject in preset.gameObjects)
+            foreach (var preset in LabelManager.Presets)
             {
-                if (!gameObject.GameObject)
-                {
-                    gameObject.GameObject = EditorUtility.InstanceIDToObject(gameObject.ID) as GameObject;
-                }
+                EditorUtility.SetDirty(preset);
+                AssetDatabase.SaveAssetIfDirty(preset);
+                AssetDatabase.Refresh();
             }
         }
-    }
-    
-    public static void AddPreset(HierarchyLabelPreset _preset)
-    {
-        if (!Presets.Contains(_preset))
+
+        public static void AddPreset(Label _preset)
         {
-            Presets.Add(_preset);
+            if (!Presets.Contains(_preset))
+            {
+                Presets.Add(_preset);
+            }
+
+            EditorApplication.RepaintHierarchyWindow();
         }
-        
-        EditorApplication.RepaintHierarchyWindow();
-    }
-    
-    public static void RemovePreset(HierarchyLabelPreset _preset)
-    {
-        if (Presets.Contains(_preset))
+
+        public static void RemovePreset(Label _preset)
         {
-            Presets.Remove(_preset);
+            if (Presets.Contains(_preset))
+            {
+                Presets.Remove(_preset);
+            }
+
+            EditorApplication.RepaintHierarchyWindow();
         }
-        
-        EditorApplication.RepaintHierarchyWindow();
     }
 }
