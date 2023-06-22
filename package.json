@@ -1,0 +1,13 @@
+{
+    "name": "com.epohless.hierarchyenhancer",
+    "version": "0.2.0",
+    "displayName": "Hierarchy Enhancer",
+    "description": "Enhance your hierarchy with customized tools!",
+    "unity": "2021.3",
+    "unityRelease": "10f1",
+    "author": {
+      "name": "epohless",
+      "email": "kevinsalimbeni@gmail.com",
+      "url": "https://www.epohless.me/"
+    }
+  }
