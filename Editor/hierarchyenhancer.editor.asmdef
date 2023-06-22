@@ -1,0 +1,16 @@
+{
+    "name": "hierarchyenhancer.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:bd24482769a800d44ac9606afc76de81"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
