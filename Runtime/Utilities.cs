@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Runtime
 {
     public static class Utilities
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Runtime
 {
     public class Label : ScriptableObject
     {

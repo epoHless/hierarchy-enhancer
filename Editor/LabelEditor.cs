@@ -1,13 +1,15 @@
-﻿using UnityEditor;
+﻿using HierarchyEnhancer.Runtime;
+using UnityEditor;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
     [CustomEditor(typeof(Label))]
-    internal class LabelEditor : Editor
+    public class LabelEditor : UnityEditor.Editor
     {
         public Label script;
-        private GUIStyle labelStyle;
+        private GUIStyle labelStyle; 
 
         private void Awake()
         {
@@ -30,10 +32,6 @@ namespace HierarchyEnhancer
         {
             AssetDatabase.SaveAssetIfDirty(script);
         }
-
-        // public override void OnInspectorGUI()
-        // {
-        // }
 
         internal void ShowTextColorBGColor()
         {
@@ -92,4 +90,5 @@ namespace HierarchyEnhancer
             EditorGUILayout.EndHorizontal();
         }
     }
+#endif
 }

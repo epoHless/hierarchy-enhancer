@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Runtime
 {
     [System.Serializable]
     public class Tooltip

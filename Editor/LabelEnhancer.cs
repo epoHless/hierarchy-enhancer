@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
     [InitializeOnLoad]
-    internal static class LabelEnhancer
+    public static class LabelEnhancer
     {
         private static bool drawLines = true;
 
@@ -116,7 +118,7 @@ namespace HierarchyEnhancer
                             new GUIContent() { tooltip = text }))
                     {
                         Selection.activeGameObject = _gameObject;
-                        OpenAdditionalLockedInpsector.DisplayLockedInspector();
+                        OpenAdditionalLockedInspector.DisplayLockedInspector();
                     }
 
                     GUI.DrawTexture(
@@ -251,4 +253,5 @@ namespace HierarchyEnhancer
             return style;
         }
     }
+#endif
 }

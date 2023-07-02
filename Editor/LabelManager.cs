@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
+    
     [InitializeOnLoad]
-    internal static class LabelManager
+    public static class LabelManager
     {
         internal static string LabelsDirectory =>
             PlayerPrefs.HasKey("LabelDirectory") ? PlayerPrefs.GetString("LabelDirectory") : null;
@@ -114,4 +117,5 @@ namespace HierarchyEnhancer
             EditorApplication.RepaintHierarchyWindow();
         }
     }
+#endif
 }

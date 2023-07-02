@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Editor
 {
-    internal class LabelEditorWindow : EditorWindow
+#if UNITY_EDITOR
+    public class LabelEditorWindow : EditorWindow
     {
         private Label _activeLabel = null;
 
@@ -84,7 +86,7 @@ namespace HierarchyEnhancer
 
                     if (_activeLabel) //Create the editor for the selected Preset
                     {
-                        var editor = Editor.CreateEditor(_activeLabel) as LabelEditor;
+                        var editor = UnityEditor.Editor.CreateEditor(_activeLabel) as LabelEditor;
 
                         EditorGUILayout.BeginVertical();
 
@@ -403,4 +405,5 @@ namespace HierarchyEnhancer
             }
         }
     }
+#endif
 }

@@ -1,9 +1,11 @@
-﻿using UnityEditor;
+﻿using HierarchyEnhancer.Runtime;
+using UnityEditor;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Editor
 {
-    internal class LabelInfoWindow : EditorWindow
+#if UNITY_EDITOR
+    public class LabelInfoWindow : EditorWindow
     {
         public Label label;
         public int index;
@@ -31,4 +33,5 @@ namespace HierarchyEnhancer
                 GUILayout.ExpandHeight(true));
         }
     }
+#endif
 }

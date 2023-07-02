@@ -3,9 +3,10 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace HierarchyEnhancer
+namespace HierarchyEnhancer.Editor
 {
-    public static class OpenAdditionalLockedInpsector
+#if UNITY_EDITOR
+    public static class OpenAdditionalLockedInspector
     {
         public static void DisplayLockedInspector()
         {
@@ -19,7 +20,7 @@ namespace HierarchyEnhancer
 
         private static Type GetInspectorWindowType()
         {
-            return typeof(Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+            return typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
         }
 
         private static void LockInspector(Type _obj)
@@ -33,4 +34,5 @@ namespace HierarchyEnhancer
             }
         }
     }
+#endif
 }
