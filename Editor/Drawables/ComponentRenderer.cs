@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
 {
-    public class ComponentIndicator : IDrawable
+    public class ComponentRenderer : IRenderer
     {
         public bool IsEnabled { get; set; }
         public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)

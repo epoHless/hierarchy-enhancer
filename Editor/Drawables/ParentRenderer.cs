@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
 {
-    public class ParentIndicator : IDrawable
+    public class ParentRenderer : IRenderer
     {
         public bool IsEnabled { get; set; }
         private Color color;
 
-        public ParentIndicator(Color _color)
+        public ParentRenderer(Color _color)
         {
             color = _color;
         }

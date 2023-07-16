@@ -8,14 +8,15 @@ namespace HierarchyEnhancer.Editor
     [InitializeOnLoad]
     public static class HierarchyEnhancer
     {
-        private static IDrawable[] _drawables;
+        private static IRenderer[] _drawables;
 
         static HierarchyEnhancer()
         {
-            _drawables = new IDrawable[]
+            _drawables = new IRenderer[]
             {
-                new ParentIndicator(Color.gray),
-                new ComponentIndicator()
+                new ParentRenderer(Color.gray),
+                new ComponentRenderer(),
+                new FocusRenderer()
             };
             
             EditorApplication.hierarchyWindowItemOnGUI += DrawHierarchy;
@@ -39,9 +40,7 @@ namespace HierarchyEnhancer.Editor
             
             if (gameObject != null)
             {
-                // RenderLines(_selectionRect, gameObject, Color.gray);
                 RenderGameObjectToggle(_selectionRect, gameObject);
-                RenderFocusButton(_selectionRect, gameObject);
             }
 
             foreach (var preset in LabelManager.Labels)
@@ -54,12 +53,6 @@ namespace HierarchyEnhancer.Editor
                 if (gameObject != null && value)
                 {
                     string text = content.text;
-
-                    // if (gameObject)
-                    // {
-                    //     RenderLines(_selectionRect, gameObject, preset.backgroundColor);
-                    // }
-
                     RenderGUI(_instanceID, _selectionRect, text, preset, gameObject);
                 }
             }
@@ -76,18 +69,6 @@ namespace HierarchyEnhancer.Editor
         }
 
         #region Render Methods
-
-        private static void RenderFocusButton(Rect _selectionRect, GameObject _gameObject)
-        {
-            if (!LabelManager.ShowFocusButton) return;
-
-            if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15),
-                    new GUIContent() { tooltip = "Click to focus" }, GUIStyle.none))
-            {
-                Selection.activeObject = _gameObject;
-                SceneView.FrameLastActiveSceneView();
-            }
-        }
 
         private static void RenderGameObjectToggle(Rect _selectionRect, GameObject _gameObject)
         {
@@ -110,36 +91,7 @@ namespace HierarchyEnhancer.Editor
                 guiContent, SetStylePreset(_preset, _instanceID, _selectionRect));
 
             RenderGameObjectToggle(_selectionRect, _gameObject);
-            RenderFocusButton(_selectionRect, _gameObject);
-
-            // var textwidht = GUI.skin.label.CalcSize(guiContent);
-            // var components = _gameObject.GetComponents(typeof(Component));
-            // int compOffset = 16;
-            //
-            // if (components.Length > 1)
-            // {
-            //     for (int i = 1; i < components.Length; i++)
-            //     {
-            //         var content = EditorGUIUtility.ObjectContent(_gameObject.GetComponents(typeof(Component))[i],
-            //             typeof(Component));
-            //
-            //         var text = content.text;
-            //         text = text.Substring(text.IndexOf('(') + 1).Trim(')');
-            //
-            //         if (GUI.Button(
-            //                 new Rect(_selectionRect.xMin + 2 + textwidht.x + compOffset, _selectionRect.yMin, 15f, 15f),
-            //                 new GUIContent() { tooltip = text }))
-            //         {
-            //             Selection.activeGameObject = _gameObject;
-            //             OpenAdditionalLockedInspector.DisplayLockedInspector();
-            //         }
-            //
-            //         GUI.DrawTexture(
-            //             new Rect(_selectionRect.xMin + 2 + textwidht.x + compOffset, _selectionRect.yMin, 15f, 15f),
-            //             content.image);
-            //         compOffset += 16;
-            //     }
-            // }
+            // RenderFocusButton(_selectionRect, _gameObject);
 
             if (_preset.icon)
             {
@@ -167,61 +119,7 @@ namespace HierarchyEnhancer.Editor
             }
         }
 
-        // private static void RenderLines(Rect _selectionRect, GameObject _gameObject, Color _color)
-        // {
-        //     if (!LabelManager.ShowHierarchyLines && !drawLines) return;
-        //
-        //     if (_gameObject.transform.childCount > 0)
-        //     {
-        //         DrawLine(_selectionRect, _color, 6, 6, -24.5f, 5);
-        //     }
-        //
-        //     var transforms = GetParentCount(_gameObject);
-        //
-        //     if (_gameObject.transform.parent != null)
-        //     {
-        //         if (_gameObject.transform.childCount == 0)
-        //             DrawLine(_selectionRect, _color, 30f, 1f, -36f, 7.45f);
-        //         else
-        //             DrawLine(_selectionRect, _color, 17, 1f, -36, 7.45f);
-        //
-        //         for (int i = 0; i < transforms.Count; i++) //adds additional lines for nested objects
-        //         {
-        //             if (transforms[i] &&
-        //                 _gameObject.transform.childCount == 0 &&
-        //                 transforms[i].GetChild(transforms[i].childCount - 1).gameObject == _gameObject)
-        //                 DrawLine(_selectionRect, _color, 1, 8f, -36f - (14f * i));
-        //             else
-        //                 DrawLine(_selectionRect, _color, 1, 16, -36f - (14f * i));
-        //         }
-        //     }
-        //
-        //     drawLines = false;
-        // }
-
-        // private static void DrawLine(Rect _selectionRect, Color _color, float _width, float _height, float _xOffset,
-        //     float _yOffset = 0)
-        // {
-        //     EditorGUI.DrawRect(
-        //         new Rect(_selectionRect.xMin + _xOffset, _selectionRect.yMin + _yOffset, _width, _height), _color);
-        // }
-
         #endregion
-
-        // private static List<Transform> GetParentCount(GameObject _gameObject)
-        // {
-        //     List<Transform> parents = new List<Transform>();
-        //
-        //     Transform current = _gameObject.transform;
-        //
-        //     while (current.parent != null)
-        //     {
-        //         current = current.parent;
-        //         parents.Add(current);
-        //     }
-        //
-        //     return parents;
-        // }
 
         private static bool IsGameObjectEnabled(int _instanceID)
         {
