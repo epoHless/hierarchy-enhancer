@@ -65,7 +65,7 @@ namespace HierarchyEnhancer.Editor
                     GUILayout.FlexibleSpace();
 
                     GUI.DrawTexture(new Rect(new Vector2(0, 357), new Vector2(230, 3)),
-                        Utilities.DrawCube(1, 1, new Color(0.16f, 0.16f, 0.16f, 1f)));
+                        Utilities.DrawCube(new Color(0.16f, 0.16f, 0.16f, 1f)));
 
                     if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
                     {
@@ -95,7 +95,7 @@ namespace HierarchyEnhancer.Editor
                         GUILayout.Space(-20);
 
                         GUI.DrawTexture(new Rect(new Vector2(230, 0), new Vector2(3, 410)),
-                            Utilities.DrawCube(1, 1, new Color(0.16f, 0.16f, 0.16f, 1f)));
+                            Utilities.DrawCube(new Color(0.16f, 0.16f, 0.16f, 1f)));
 
                         RenderLabel(editor);
                     }

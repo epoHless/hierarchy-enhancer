@@ -21,33 +21,19 @@ namespace HierarchyEnhancer.Editor
 
         internal static bool ShowFocusButton = true;
         internal static bool ShowToggleButton = true;
-
-        private static bool _showHierarchyLines = true;
-        internal static bool ShowHierarchyLines
-        {
-            get => _showHierarchyLines;
-            set
-            {
-                _showHierarchyLines = value;
-                OnRequestLineDraw?.Invoke(_showHierarchyLines);
-            }
-        }
-
-        internal delegate void Evt<T>(T _value);
-        internal static Evt<bool> OnRequestLineDraw;
+        internal static bool ShowHierarchyLines { get; set; } = true;
 
         static LabelManager()
         {
-            EditorApplication.delayCall += FetchLabels;
             EditorApplication.quitting += SaveAssets;
         }
 
-        public static void FetchLabels()
+        public static List<Label> FetchLabels()
         {
             if (string.IsNullOrEmpty(LabelsDirectory))
             {
                 Debug.LogWarning("There is no label directory selected! Pick one in the Label Editor -> Options");
-                return;
+                return null;
             }
             else
             {
@@ -82,6 +68,8 @@ namespace HierarchyEnhancer.Editor
                     }
                 }
             }
+
+            return Labels;
         }
         
         private static void SaveAssets()
@@ -93,7 +81,6 @@ namespace HierarchyEnhancer.Editor
                 AssetDatabase.Refresh();
             }
 
-            EditorApplication.delayCall -= FetchLabels;
             EditorApplication.quitting -= SaveAssets;
         }
 
