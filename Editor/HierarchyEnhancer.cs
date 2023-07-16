@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using HierarchyEnhancer.Runtime;
+﻿using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,12 +6,18 @@ namespace HierarchyEnhancer.Editor
 {
 #if UNITY_EDITOR
     [InitializeOnLoad]
-    public static class LabelEnhancer
+    public static class HierarchyEnhancer
     {
-        private static bool drawLines = true;
+        private static IDrawable[] _drawables;
 
-        static LabelEnhancer()
+        static HierarchyEnhancer()
         {
+            _drawables = new IDrawable[]
+            {
+                new ParentIndicator(Color.gray),
+                new ComponentIndicator()
+            };
+            
             EditorApplication.hierarchyWindowItemOnGUI += DrawHierarchy;
             EditorApplication.hierarchyChanged += DrawHierarchyLines;
 
@@ -24,9 +29,17 @@ namespace HierarchyEnhancer.Editor
             var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(_instanceID), null);
             var gameObject = EditorUtility.InstanceIDToObject(_instanceID) as GameObject;
 
+            if (!gameObject) return;
+
+            
+            for (int i = 0; i < _drawables.Length; i++)
+            {
+                _drawables[i].OnGUI(_instanceID, _selectionRect, gameObject);
+            }
+            
             if (gameObject != null)
             {
-                RenderLines(_selectionRect, gameObject, Color.gray);
+                // RenderLines(_selectionRect, gameObject, Color.gray);
                 RenderGameObjectToggle(_selectionRect, gameObject);
                 RenderFocusButton(_selectionRect, gameObject);
             }
@@ -42,10 +55,10 @@ namespace HierarchyEnhancer.Editor
                 {
                     string text = content.text;
 
-                    if (gameObject)
-                    {
-                        RenderLines(_selectionRect, gameObject, preset.backgroundColor);
-                    }
+                    // if (gameObject)
+                    // {
+                    //     RenderLines(_selectionRect, gameObject, preset.backgroundColor);
+                    // }
 
                     RenderGUI(_instanceID, _selectionRect, text, preset, gameObject);
                 }
@@ -54,12 +67,12 @@ namespace HierarchyEnhancer.Editor
 
         private static void DrawHierarchyLines()
         {
-            drawLines = true;
+            // drawLines = true;
         }
 
         private static void OnRequestLineDraw(bool _value)
         {
-            drawLines = _value;
+            // drawLines = _value;
         }
 
         #region Render Methods
@@ -99,34 +112,34 @@ namespace HierarchyEnhancer.Editor
             RenderGameObjectToggle(_selectionRect, _gameObject);
             RenderFocusButton(_selectionRect, _gameObject);
 
-            var textwidht = GUI.skin.label.CalcSize(guiContent);
-            var components = _gameObject.GetComponents(typeof(Component));
-            int compOffset = 16;
-
-            if (components.Length > 1)
-            {
-                for (int i = 1; i < components.Length; i++)
-                {
-                    var content = EditorGUIUtility.ObjectContent(_gameObject.GetComponents(typeof(Component))[i],
-                        typeof(Component));
-
-                    var text = content.text;
-                    text = text.Substring(text.IndexOf('(') + 1).Trim(')');
-
-                    if (GUI.Button(
-                            new Rect(_selectionRect.xMin + 2 + textwidht.x + compOffset, _selectionRect.yMin, 15f, 15f),
-                            new GUIContent() { tooltip = text }))
-                    {
-                        Selection.activeGameObject = _gameObject;
-                        OpenAdditionalLockedInspector.DisplayLockedInspector();
-                    }
-
-                    GUI.DrawTexture(
-                        new Rect(_selectionRect.xMin + 2 + textwidht.x + compOffset, _selectionRect.yMin, 15f, 15f),
-                        content.image);
-                    compOffset += 16;
-                }
-            }
+            // var textwidht = GUI.skin.label.CalcSize(guiContent);
+            // var components = _gameObject.GetComponents(typeof(Component));
+            // int compOffset = 16;
+            //
+            // if (components.Length > 1)
+            // {
+            //     for (int i = 1; i < components.Length; i++)
+            //     {
+            //         var content = EditorGUIUtility.ObjectContent(_gameObject.GetComponents(typeof(Component))[i],
+            //             typeof(Component));
+            //
+            //         var text = content.text;
+            //         text = text.Substring(text.IndexOf('(') + 1).Trim(')');
+            //
+            //         if (GUI.Button(
+            //                 new Rect(_selectionRect.xMin + 2 + textwidht.x + compOffset, _selectionRect.yMin, 15f, 15f),
+            //                 new GUIContent() { tooltip = text }))
+            //         {
+            //             Selection.activeGameObject = _gameObject;
+            //             OpenAdditionalLockedInspector.DisplayLockedInspector();
+            //         }
+            //
+            //         GUI.DrawTexture(
+            //             new Rect(_selectionRect.xMin + 2 + textwidht.x + compOffset, _selectionRect.yMin, 15f, 15f),
+            //             content.image);
+            //         compOffset += 16;
+            //     }
+            // }
 
             if (_preset.icon)
             {
@@ -154,61 +167,61 @@ namespace HierarchyEnhancer.Editor
             }
         }
 
-        private static void RenderLines(Rect _selectionRect, GameObject _gameObject, Color _color)
-        {
-            if (!LabelManager.ShowHierarchyLines && !drawLines) return;
+        // private static void RenderLines(Rect _selectionRect, GameObject _gameObject, Color _color)
+        // {
+        //     if (!LabelManager.ShowHierarchyLines && !drawLines) return;
+        //
+        //     if (_gameObject.transform.childCount > 0)
+        //     {
+        //         DrawLine(_selectionRect, _color, 6, 6, -24.5f, 5);
+        //     }
+        //
+        //     var transforms = GetParentCount(_gameObject);
+        //
+        //     if (_gameObject.transform.parent != null)
+        //     {
+        //         if (_gameObject.transform.childCount == 0)
+        //             DrawLine(_selectionRect, _color, 30f, 1f, -36f, 7.45f);
+        //         else
+        //             DrawLine(_selectionRect, _color, 17, 1f, -36, 7.45f);
+        //
+        //         for (int i = 0; i < transforms.Count; i++) //adds additional lines for nested objects
+        //         {
+        //             if (transforms[i] &&
+        //                 _gameObject.transform.childCount == 0 &&
+        //                 transforms[i].GetChild(transforms[i].childCount - 1).gameObject == _gameObject)
+        //                 DrawLine(_selectionRect, _color, 1, 8f, -36f - (14f * i));
+        //             else
+        //                 DrawLine(_selectionRect, _color, 1, 16, -36f - (14f * i));
+        //         }
+        //     }
+        //
+        //     drawLines = false;
+        // }
 
-            if (_gameObject.transform.childCount > 0)
-            {
-                DrawLine(_selectionRect, _color, 6, 6, -24.5f, 5);
-            }
-
-            var transforms = GetParentCount(_gameObject);
-
-            if (_gameObject.transform.parent != null)
-            {
-                if (_gameObject.transform.childCount == 0)
-                    DrawLine(_selectionRect, _color, 30f, 1f, -36f, 7.45f);
-                else
-                    DrawLine(_selectionRect, _color, 17, 1f, -36, 7.45f);
-
-                for (int i = 0; i < transforms.Count; i++) //adds additional lines for nested objects
-                {
-                    if (transforms[i] &&
-                        _gameObject.transform.childCount == 0 &&
-                        transforms[i].GetChild(transforms[i].childCount - 1).gameObject == _gameObject)
-                        DrawLine(_selectionRect, _color, 1, 8f, -36f - (14f * i));
-                    else
-                        DrawLine(_selectionRect, _color, 1, 16, -36f - (14f * i));
-                }
-            }
-
-            drawLines = false;
-        }
-
-        private static void DrawLine(Rect _selectionRect, Color _color, float _width, float _height, float _xOffset,
-            float _yOffset = 0)
-        {
-            EditorGUI.DrawRect(
-                new Rect(_selectionRect.xMin + _xOffset, _selectionRect.yMin + _yOffset, _width, _height), _color);
-        }
+        // private static void DrawLine(Rect _selectionRect, Color _color, float _width, float _height, float _xOffset,
+        //     float _yOffset = 0)
+        // {
+        //     EditorGUI.DrawRect(
+        //         new Rect(_selectionRect.xMin + _xOffset, _selectionRect.yMin + _yOffset, _width, _height), _color);
+        // }
 
         #endregion
 
-        private static List<Transform> GetParentCount(GameObject _gameObject)
-        {
-            List<Transform> parents = new List<Transform>();
-
-            Transform current = _gameObject.transform;
-
-            while (current.parent != null)
-            {
-                current = current.parent;
-                parents.Add(current);
-            }
-
-            return parents;
-        }
+        // private static List<Transform> GetParentCount(GameObject _gameObject)
+        // {
+        //     List<Transform> parents = new List<Transform>();
+        //
+        //     Transform current = _gameObject.transform;
+        //
+        //     while (current.parent != null)
+        //     {
+        //         current = current.parent;
+        //         parents.Add(current);
+        //     }
+        //
+        //     return parents;
+        // }
 
         private static bool IsGameObjectEnabled(int _instanceID)
         {
