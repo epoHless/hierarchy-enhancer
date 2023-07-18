@@ -19,6 +19,8 @@ namespace HierarchyEnhancer.Editor
         private Vector2 tooltipsScrollPos = Vector2.zero;
         private Vector2 gameObjectsScrollPos = Vector2.zero;
 
+        private GUIStyle labelStyle;
+        
         int labelTab = 0;
         int optionsTab = 0;
 
@@ -33,6 +35,11 @@ namespace HierarchyEnhancer.Editor
         private void Awake()
         {
             InitUI();
+        }
+
+        private void OnEnable()
+        {
+            
         }
 
         private void InitUI()
@@ -60,7 +67,7 @@ namespace HierarchyEnhancer.Editor
 
                     EditorGUILayout.BeginVertical();
 
-                    RenderPresets();
+                    RenderLabels();
 
                     GUILayout.FlexibleSpace();
 
@@ -193,17 +200,28 @@ namespace HierarchyEnhancer.Editor
 
         private void RenderGameObjects(LabelEditor _editor)
         {
+            var color = GUI.color;
+
             GUILayout.Space(20);
 
             GUILayout.BeginHorizontal(GUI.skin.window, GUILayout.Width(470), GUILayout.Height(20));
 
+            labelStyle = new GUIStyle(GUI.skin.label) 
+            { 
+                fontStyle = FontStyle.Bold
+            };
+            
             EditorGUILayout.LabelField($"Active Objects : {_editor.script.gameObjects.Count}",
-                new GUIStyle(GUI.skin.textField));
+                labelStyle);
 
-            if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
+            GUI.color = Color.green;
+            
+            if (GUILayout.Button("Add GameObject", GUILayout.Width(110), GUILayout.Height(20)))
             {
                 _editor.script.gameObjects.Add(new ObjectDictionary());
             }
+
+            GUI.color = color;
 
             GUILayout.EndHorizontal();
             
@@ -231,33 +249,45 @@ namespace HierarchyEnhancer.Editor
                     }
                 }
 
-                if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+                GUI.color = Color.red;
+                
+                if (GUILayout.Button("Remove", GUILayout.Width(55),GUILayout.Height(20)))
                 {
                     if (_editor.script.gameObjects.Contains(_editor.script.gameObjects[i]))
                         _editor.script.gameObjects.Remove(_editor.script.gameObjects[i]);
                 }
 
+                GUI.color = color;
+
                 GUILayout.EndHorizontal();
 
-                if (GUILayout.Button("Add Tooltip"))
+                GUI.color = Color.green;
+                
+                if (GUILayout.Button("Add Tooltip", GUILayout.Width(75)))
                 {
                     _editor.script.gameObjects[i].tooltips.Add(new Tooltip());
                 }
+
+                GUI.color = color;
                 
                 for (int j = 0; j < _editor.script.gameObjects[i].tooltips.Count; j++)
                 {
-                    GUILayout.BeginHorizontal();
-                    
-                    _editor.script.gameObjects[i].tooltips[j].tooltip =
-                        EditorGUILayout.TextField(_editor.script.gameObjects[i].tooltips[j].tooltip);
+                    GUILayout.BeginHorizontal(GUI.skin.box);
                     
                     _editor.script.gameObjects[i].tooltips[j].icon =
                         EditorGUILayout.ObjectField(_editor.script.gameObjects[i].tooltips[j].icon, typeof(Texture2D), false) as Texture2D;
+                    
+                    _editor.script.gameObjects[i].tooltips[j].tooltip =
+                        EditorGUILayout.TextField(_editor.script.gameObjects[i].tooltips[j].tooltip);
 
+                    GUI.color = Color.red;
+                    
                     if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
                     {
                         _editor.script.gameObjects[i].tooltips.Remove(_editor.script.gameObjects[i].tooltips[j]);
                     }
+
+                    GUI.color = color;
                     
                     GUILayout.EndHorizontal();
                 }
@@ -273,7 +303,7 @@ namespace HierarchyEnhancer.Editor
         /// <summary>
         /// Creates all the label buttons
         /// </summary>
-        private void RenderPresets()
+        private void RenderLabels()
         {
             labelsScrollPos = GUILayout.BeginScrollView(labelsScrollPos, false, false);
 

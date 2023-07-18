@@ -26,12 +26,6 @@ namespace HierarchyEnhancer.Editor
                     // text = text.Substring(text.IndexOf('(') + 1).Trim(')');
 
                     var rect = new Rect(_selectionRect.xMin + 2 + textWidth.x + compOffset, _selectionRect.yMin, 15f, 15f);
-                    
-                    // if (GUI.Button(rect, new GUIContent() { tooltip = text }))
-                    // {
-                    //     Selection.activeGameObject = _gameObject;
-                    //     OpenAdditionalLockedInspector.DisplayLockedInspector();
-                    // }
 
                     GUI.DrawTexture(rect, content.image);
                     
