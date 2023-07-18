@@ -6,7 +6,7 @@ namespace HierarchyEnhancer.Editor
 {
     public class ParentRenderer : IRenderer
     {
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
         private Color color;
 
         public ParentRenderer(Color _color)

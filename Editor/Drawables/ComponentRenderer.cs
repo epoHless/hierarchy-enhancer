@@ -5,7 +5,7 @@ namespace HierarchyEnhancer.Editor
 {
     public class ComponentRenderer : IRenderer
     {
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
         public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
         {
             var objectContent = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(_instanceID), null);
@@ -22,15 +22,16 @@ namespace HierarchyEnhancer.Editor
                     var content = EditorGUIUtility.ObjectContent(_gameObject.GetComponents(typeof(Component))[i],
                         typeof(Component));
 
-                    var text = content.text;
-                    text = text.Substring(text.IndexOf('(') + 1).Trim(')');
+                    // var text = content.text;
+                    // text = text.Substring(text.IndexOf('(') + 1).Trim(')');
 
                     var rect = new Rect(_selectionRect.xMin + 2 + textWidth.x + compOffset, _selectionRect.yMin, 15f, 15f);
                     
-                    if (GUI.Button(rect, new GUIContent() { tooltip = text }))
-                    {
-                        OpenAdditionalLockedInspector.DisplayLockedInspector();
-                    }
+                    // if (GUI.Button(rect, new GUIContent() { tooltip = text }))
+                    // {
+                    //     Selection.activeGameObject = _gameObject;
+                    //     OpenAdditionalLockedInspector.DisplayLockedInspector();
+                    // }
 
                     GUI.DrawTexture(rect, content.image);
                     

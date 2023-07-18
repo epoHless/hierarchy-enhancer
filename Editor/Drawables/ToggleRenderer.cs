@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ToggleRenderer : IRenderer
 {
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled { get; set; } = true;
     public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
     {
         if (!LabelManager.ShowToggleButton) return;

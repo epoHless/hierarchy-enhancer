@@ -1,25 +1,17 @@
-﻿using System.Collections.Generic;
-using HierarchyEnhancer.Editor;
+﻿using HierarchyEnhancer.Editor;
 using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
 
 public class LabelRenderer : IRenderer
 {
-    private List<Label> labels;
-
-    public bool IsEnabled { get; set; }
-
-    public LabelRenderer(List<Label> _labels)
-    {
-        labels = _labels;
-    }
+    public bool IsEnabled { get; set; } = true;
     
     public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
     {
         var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(_instanceID), null);
         
-        foreach (var preset in labels)
+        foreach (var preset in LabelManager.Labels)
         {
             if (!preset.isActive) continue;
 

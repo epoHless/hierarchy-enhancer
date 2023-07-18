@@ -7,20 +7,18 @@ namespace HierarchyEnhancer.Editor
     [InitializeOnLoad]
     public static class HierarchyEnhancer
     {
-        private static IRenderer[] _renderers;
+        public static IRenderer[] _renderers { get; private set; }
 
         static HierarchyEnhancer()
         {
-            var labels = LabelManager.FetchLabels();
-            
             _renderers = new IRenderer[]
             {
+                new LabelRenderer(),
                 new ParentRenderer(Color.gray),
                 new ComponentRenderer(),
                 new FocusRenderer(),
                 new ToggleRenderer(),
-                new LabelRenderer(labels),
-                new IconRenderer(labels)
+                new IconRenderer()
             };
             
             EditorApplication.hierarchyWindowItemOnGUI -= DrawHierarchy;
@@ -34,7 +32,7 @@ namespace HierarchyEnhancer.Editor
 
             for (int i = 0; i < _renderers.Length; i++)
             {
-                _renderers[i].OnGUI(_instanceID, _selectionRect, gameObject);
+                if(_renderers[i].IsEnabled) _renderers[i].OnGUI(_instanceID, _selectionRect, gameObject);
             }
         }
     }

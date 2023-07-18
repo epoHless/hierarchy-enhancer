@@ -5,24 +5,12 @@ using UnityEngine;
 
 public class IconRenderer : IRenderer
 {
-    private List<Label> labels;
-
-    public IconRenderer(List<Label> _labels)
-    {
-        labels = _labels;
-        
-        foreach (var label in labels)
-        {
-            Debug.Log(label.name);
-        }
-    }
-
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled { get; set; } = true;
     public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
     {
         int offset = LabelManager.ShowToggleButton ? 32 : 16;
 
-        foreach (var label in labels)
+        foreach (var label in LabelManager.Labels)
         {
             for (int i = 0; i < label.tooltips.Count; i++)
             {

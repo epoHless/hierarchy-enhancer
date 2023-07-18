@@ -78,7 +78,7 @@ namespace HierarchyEnhancer.Editor
 
                     if (GUILayout.Button("New Label", GUILayout.Width(110)))
                     {
-                        if (labelName != String.Empty) AddNewLabel(labelName);
+                        if (labelName != String.Empty) LabelManager.CreateLabel(labelName);
                     }
 
                     GUILayout.EndHorizontal();
@@ -261,17 +261,17 @@ namespace HierarchyEnhancer.Editor
 
             for (int i = 0; i < _editor.script.gameObjects.Count; i++)
             {
-                GUILayout.BeginHorizontal(GUILayout.Width(460));
+                GUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Width(460));
 
                 _editor.script.gameObjects[i].GameObject =
                     (GameObject)EditorGUILayout.ObjectField(_editor.script.gameObjects[i].GameObject,
                         typeof(GameObject), true);
 
-                foreach (var preset in LabelManager.Labels)
+                foreach (var label in LabelManager.Labels)
                 {
-                    var gameObjects = preset.gameObjects.Where(_o => _o != null);
+                    var gameObjects = label.gameObjects.Where(_o => _o != null);
 
-                    if (_editor.script != preset && gameObjects.Contains(_editor.script.gameObjects[i]))
+                    if (_editor.script != label && gameObjects.Contains(_editor.script.gameObjects[i]))
                     {
                         _editor.script.gameObjects[i] = null;
                     }
@@ -331,7 +331,7 @@ namespace HierarchyEnhancer.Editor
 
                     if (GUILayout.Button("X", GUILayout.Width(20)))
                     {
-                        DeleteLabel(LabelManager.Labels[i]);
+                        LabelManager.DeleteLabel(LabelManager.Labels[i]);
                     }
 
                     GUI.color = guiColor;
@@ -345,65 +345,65 @@ namespace HierarchyEnhancer.Editor
 
         #endregion
 
-        /// <summary>
-        /// Create and store in the default folder a new label with a given name.
-        /// </summary>
-        /// <param name="_name"></param>
-        private void AddNewLabel(string _name)
-        {
-            var label = CreateInstance<Label>();
-            string labelPath = String.Concat(LabelManager.LabelsDirectory, $"/LabelPreset_{_name}.asset");
-
-            if (!File.Exists(labelPath))
-            {
-                AssetDatabase.CreateAsset(label, labelPath);
-
-                label.textColor = Color.white;
-                label.backgroundColor = label.textColor;
-
-                label.tooltips = new List<Tooltip>();
-                label.gameObjects = new List<ObjectDictionary>();
-
-                LabelManager.AddPreset(label);
-                EditorApplication.RepaintHierarchyWindow();
-
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-
-                _activeLabel = label;
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("ERROR", $"asset already exists at path: {labelPath}", "OK");
-            }
-
-            labelName = String.Empty;
-        }
-
-        /// <summary>
-        /// Deletes the selected label from the Assets Folder
-        /// </summary>
-        /// <param name="_label"></param>
-        private void DeleteLabel(Label _label)
-        {
-            LabelManager.RemovePreset(_label);
-
-            string assetPath = String.Concat(LabelManager.LabelsDirectory, $"/{_label.name}.asset");
-
-            if (File.Exists(assetPath))
-            {
-                AssetDatabase.DeleteAsset(assetPath);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-
-                _activeLabel = LabelManager.Labels.Count > 0 ? LabelManager.Labels[0] : null;
-                LabelManager.Labels.Remove(_label);
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("ERROR", $"Could not find asset at path: {assetPath}", "OK");
-            }
-        }
+        // /// <summary>
+        // /// Create and store in the default folder a new label with a given name.
+        // /// </summary>
+        // /// <param name="_name"></param>
+        // private void AddNewLabel(string _name)
+        // {
+        //     var label = CreateInstance<Label>();
+        //     string labelPath = String.Concat(LabelManager.LabelsDirectory, $"/LabelPreset_{_name}.asset");
+        //
+        //     if (!File.Exists(labelPath))
+        //     {
+        //         AssetDatabase.CreateAsset(label, labelPath);
+        //
+        //         label.textColor = Color.white;
+        //         label.backgroundColor = label.textColor;
+        //
+        //         label.tooltips = new List<Tooltip>();
+        //         label.gameObjects = new List<ObjectDictionary>();
+        //
+        //         LabelManager.AddPreset(label);
+        //         EditorApplication.RepaintHierarchyWindow();
+        //
+        //         AssetDatabase.SaveAssets();
+        //         AssetDatabase.Refresh();
+        //
+        //         _activeLabel = label;
+        //     }
+        //     else
+        //     {
+        //         EditorUtility.DisplayDialog("ERROR", $"asset already exists at path: {labelPath}", "OK");
+        //     }
+        //
+        //     labelName = String.Empty;
+        // }
+        //
+        // /// <summary>
+        // /// Deletes the selected label from the Assets Folder
+        // /// </summary>
+        // /// <param name="_label"></param>
+        // private void DeleteLabel(Label _label)
+        // {
+        //     LabelManager.RemovePreset(_label);
+        //
+        //     string assetPath = String.Concat(LabelManager.LabelsDirectory, $"/{_label.name}.asset");
+        //
+        //     if (File.Exists(assetPath))
+        //     {
+        //         AssetDatabase.DeleteAsset(assetPath);
+        //         AssetDatabase.SaveAssets();
+        //         AssetDatabase.Refresh();
+        //
+        //         _activeLabel = LabelManager.Labels.Count > 0 ? LabelManager.Labels[0] : null;
+        //         LabelManager.Labels.Remove(_label);
+        //     }
+        //     else
+        //     {
+        //         EditorUtility.DisplayDialog("ERROR", $"Could not find asset at path: {assetPath}", "OK");
+        //     }
+        // }
     }
 #endif
 }

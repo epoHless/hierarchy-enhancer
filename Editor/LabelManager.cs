@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
@@ -28,12 +30,12 @@ namespace HierarchyEnhancer.Editor
             EditorApplication.quitting += SaveAssets;
         }
 
-        public static List<Label> FetchLabels()
+        public static void FetchLabels()
         {
             if (string.IsNullOrEmpty(LabelsDirectory))
             {
                 Debug.LogWarning("There is no label directory selected! Pick one in the Label Editor -> Options");
-                return null;
+                return;
             }
             else
             {
@@ -48,7 +50,7 @@ namespace HierarchyEnhancer.Editor
 
                     if (item)
                     {
-                        AddPreset(item);
+                        AddLabel(item);
 
                         foreach (var dictionary in item.gameObjects)
                         {
@@ -68,8 +70,6 @@ namespace HierarchyEnhancer.Editor
                     }
                 }
             }
-
-            return Labels;
         }
         
         private static void SaveAssets()
@@ -84,7 +84,7 @@ namespace HierarchyEnhancer.Editor
             EditorApplication.quitting -= SaveAssets;
         }
 
-        public static void AddPreset(Label _preset)
+        private static void AddLabel(Label _preset)
         {
             if (!Labels.Contains(_preset))
             {
@@ -94,7 +94,7 @@ namespace HierarchyEnhancer.Editor
             EditorApplication.RepaintHierarchyWindow();
         }
 
-        public static void RemovePreset(Label _preset)
+        private static void RemoveLabel(Label _preset)
         {
             if (Labels.Contains(_preset))
             {
@@ -102,6 +102,66 @@ namespace HierarchyEnhancer.Editor
             }
 
             EditorApplication.RepaintHierarchyWindow();
+        }
+        
+         /// <summary>
+        /// Create and store in the default folder a new label with a given name.
+        /// </summary>
+        /// <param name="_name"></param>
+        public static void CreateLabel(string _name)
+        {
+            var label = ScriptableObject.CreateInstance<Label>();
+            string labelPath = String.Concat(LabelManager.LabelsDirectory, $"/LabelPreset_{_name}.asset");
+
+            if (!File.Exists(labelPath))
+            {
+                AssetDatabase.CreateAsset(label, labelPath);
+
+                label.textColor = Color.white;
+                label.backgroundColor = label.textColor;
+
+                label.tooltips = new List<Tooltip>();
+                label.gameObjects = new List<ObjectDictionary>();
+
+                AddLabel(label);
+                EditorApplication.RepaintHierarchyWindow();
+
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+
+                // _activeLabel = label;
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("ERROR", $"asset already exists at path: {labelPath}", "OK");
+            }
+
+            // labelName = String.Empty;
+        }
+
+        /// <summary>
+        /// Deletes the selected label from the Assets Folder
+        /// </summary>
+        /// <param name="_label"></param>
+        public static void DeleteLabel(Label _label)
+        {
+            RemoveLabel(_label);
+
+            string assetPath = String.Concat(LabelManager.LabelsDirectory, $"/{_label.name}.asset");
+
+            if (File.Exists(assetPath))
+            {
+                AssetDatabase.DeleteAsset(assetPath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+
+                // _activeLabel = LabelManager.Labels.Count > 0 ? LabelManager.Labels[0] : null;
+                Labels.Remove(_label);
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("ERROR", $"Could not find asset at path: {assetPath}", "OK");
+            }
         }
     }
 #endif
