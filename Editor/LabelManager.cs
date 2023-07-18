@@ -120,7 +120,7 @@ namespace HierarchyEnhancer.Editor
                 label.textColor = Color.white;
                 label.backgroundColor = label.textColor;
 
-                label.tooltips = new List<Tooltip>();
+                // label.tooltips = new List<Tooltip>();
                 label.gameObjects = new List<ObjectDictionary>();
 
                 AddLabel(label);

@@ -37,7 +37,7 @@ namespace HierarchyEnhancer.Editor
 
         private void InitUI()
         {
-            minSize = new Vector2(710, 400);
+            minSize = new Vector2(740, 400);
             maxSize = minSize;
 
             if (LabelManager.Labels.Count > 0) _activeLabel = LabelManager.Labels[0];
@@ -53,7 +53,7 @@ namespace HierarchyEnhancer.Editor
             {
                 case 0: //labels panel
                 {
-                    minSize = new Vector2(710, 400);
+                    minSize = new Vector2(740, 400);
                     maxSize = minSize;
 
                     EditorGUILayout.BeginHorizontal();
@@ -145,7 +145,7 @@ namespace HierarchyEnhancer.Editor
 
         private void RenderLabel(LabelEditor _editor)
         {
-            labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "Icons & Info", "GameObjects" });
+            labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "GameObjects" });
 
             GUILayout.Label(_activeLabel.name.Split('_')[1] + " Preset", new GUIStyle()
             {
@@ -166,12 +166,6 @@ namespace HierarchyEnhancer.Editor
                 }
 
                 case 1:
-                {
-                    RenderTooltips(_editor);
-                    break;
-                }
-
-                case 2:
                 {
                     RenderGameObjects(_editor);
                     break;
@@ -197,55 +191,11 @@ namespace HierarchyEnhancer.Editor
             GUILayout.EndVertical();
         }
 
-        private void RenderTooltips(LabelEditor _editor)
-        {
-            GUILayout.Space(20);
-
-            GUILayout.BeginVertical(GUILayout.Width(470));
-
-            tooltipsScrollPos = GUILayout.BeginScrollView(tooltipsScrollPos, false, false);
-
-            GUILayout.BeginHorizontal(GUILayout.Width(460));
-
-            EditorGUILayout.LabelField($"Active Objects : {_editor.script.tooltips.Count}",
-                new GUIStyle(GUI.skin.textField));
-
-            if (GUILayout.Button("+", GUILayout.Width(20), GUILayout.Height(20)))
-            {
-                _editor.script.tooltips.Add(new Tooltip());
-            }
-
-            GUILayout.EndHorizontal();
-
-            for (int i = 0; i < _editor.script.tooltips.Count; i++)
-            {
-                GUILayout.BeginHorizontal(GUILayout.Width(460));
-
-                _editor.script.tooltips[i].tooltip =
-                    EditorGUILayout.TextField(_editor.script.tooltips[i].tooltip);
-                _editor.script.tooltips[i].icon =
-                    (Texture)EditorGUILayout.ObjectField(_editor.script.tooltips[i].icon, typeof(Texture),
-                        true);
-
-                if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
-                {
-                    if (_editor.script.tooltips.Contains(_editor.script.tooltips[i]))
-                        _editor.script.tooltips.Remove(_editor.script.tooltips[i]);
-                }
-
-                GUILayout.EndHorizontal();
-            }
-
-            GUILayout.EndScrollView();
-
-            GUILayout.EndVertical();
-        }
-
         private void RenderGameObjects(LabelEditor _editor)
         {
             GUILayout.Space(20);
 
-            GUILayout.BeginHorizontal(GUILayout.Width(460));
+            GUILayout.BeginHorizontal(GUI.skin.window, GUILayout.Width(470), GUILayout.Height(20));
 
             EditorGUILayout.LabelField($"Active Objects : {_editor.script.gameObjects.Count}",
                 new GUIStyle(GUI.skin.textField));
@@ -256,11 +206,15 @@ namespace HierarchyEnhancer.Editor
             }
 
             GUILayout.EndHorizontal();
+            
+            GUILayout.Space(20);
 
             gameObjectsScrollPos = GUILayout.BeginScrollView(gameObjectsScrollPos, false, false);
 
             for (int i = 0; i < _editor.script.gameObjects.Count; i++)
             {
+                GUILayout.BeginVertical(GUI.skin.window, GUILayout.Width(460));
+                
                 GUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Width(460));
 
                 _editor.script.gameObjects[i].GameObject =
@@ -284,6 +238,33 @@ namespace HierarchyEnhancer.Editor
                 }
 
                 GUILayout.EndHorizontal();
+
+                if (GUILayout.Button("Add Tooltip"))
+                {
+                    _editor.script.gameObjects[i].tooltips.Add(new Tooltip());
+                }
+                
+                for (int j = 0; j < _editor.script.gameObjects[i].tooltips.Count; j++)
+                {
+                    GUILayout.BeginHorizontal();
+                    
+                    _editor.script.gameObjects[i].tooltips[j].tooltip =
+                        EditorGUILayout.TextField(_editor.script.gameObjects[i].tooltips[j].tooltip);
+                    
+                    _editor.script.gameObjects[i].tooltips[j].icon =
+                        EditorGUILayout.ObjectField(_editor.script.gameObjects[i].tooltips[j].icon, typeof(Texture2D), false) as Texture2D;
+
+                    if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+                    {
+                        _editor.script.gameObjects[i].tooltips.Remove(_editor.script.gameObjects[i].tooltips[j]);
+                    }
+                    
+                    GUILayout.EndHorizontal();
+                }
+                
+                GUILayout.EndVertical();
+                
+                GUILayout.Space(10);
             }
 
             GUILayout.EndScrollView();
@@ -300,6 +281,8 @@ namespace HierarchyEnhancer.Editor
 
             if (LabelManager.Labels.Count == 0)
             {
+                LabelManager.FetchLabels();
+                
                 GUILayout.Label("No Presets were found!");
                 GUILayout.Label("Click Add Label to create one...");
             }

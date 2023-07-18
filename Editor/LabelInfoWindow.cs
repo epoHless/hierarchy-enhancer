@@ -23,14 +23,14 @@ namespace HierarchyEnhancer.Editor
             index = _index;
 
             string text = label.name.Split('_')[1];
-            titleContent.text = $"{text} | {label.tooltips[index].tooltip} info";
+            // titleContent.text = $"{text} | {label.tooltips[index].tooltip} info";
             Show();
         }
 
         private void OnGUI()
         {
-            label.tooltips[index].info = GUILayout.TextArea(label.tooltips[index].info, GUILayout.Height(maxSize.y),
-                GUILayout.ExpandHeight(true));
+            // label.tooltips[index].info = GUILayout.TextArea(label.tooltips[index].info, GUILayout.Height(maxSize.y),
+            //     GUILayout.ExpandHeight(true));
         }
     }
 #endif

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace HierarchyEnhancer.Runtime
 {
@@ -6,6 +7,11 @@ namespace HierarchyEnhancer.Runtime
 
     public class ObjectDictionary
     {
+        public ObjectDictionary()
+        {
+            tooltips = new List<Tooltip>();
+        }
+        
         private GameObject _gameObject;
 
         public GameObject GameObject
@@ -20,6 +26,8 @@ namespace HierarchyEnhancer.Runtime
 
         public string ID;
 
+        public List<Tooltip> tooltips;
+        
         public bool Contains(GameObject _gameObject)
         {
             return GameObject == _gameObject;

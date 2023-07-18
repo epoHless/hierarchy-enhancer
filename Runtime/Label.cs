@@ -14,7 +14,7 @@ namespace HierarchyEnhancer.Runtime
         [HideInInspector] public bool useCustomBackground;
         [HideInInspector] public Color backgroundColor;
 
-        [NonReorderable] public List<Tooltip> tooltips;
+        // [NonReorderable] public List<Tooltip> tooltips;
         [NonReorderable] public List<ObjectDictionary> gameObjects;
 
         public bool isActive = true;
