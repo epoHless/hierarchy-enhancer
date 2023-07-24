@@ -12,7 +12,7 @@ namespace HierarchyEnhancer.Editor
     [InitializeOnLoad]
     public static class LabelManager
     {
-        internal static string LabelsDirectory =>
+        private static string LabelsDirectory =>
             PlayerPrefs.HasKey("LabelDirectory") ? PlayerPrefs.GetString("LabelDirectory") : null;
 
         internal static List<Label> Labels = new List<Label>();
@@ -120,7 +120,6 @@ namespace HierarchyEnhancer.Editor
                 label.textColor = Color.white;
                 label.backgroundColor = label.textColor;
 
-                // label.tooltips = new List<Tooltip>();
                 label.gameObjects = new List<ObjectDictionary>();
 
                 AddLabel(label);
@@ -128,15 +127,11 @@ namespace HierarchyEnhancer.Editor
 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-
-                // _activeLabel = label;
             }
             else
             {
                 EditorUtility.DisplayDialog("ERROR", $"asset already exists at path: {labelPath}", "OK");
             }
-
-            // labelName = String.Empty;
         }
 
         /// <summary>
@@ -155,7 +150,6 @@ namespace HierarchyEnhancer.Editor
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
 
-                // _activeLabel = LabelManager.Labels.Count > 0 ? LabelManager.Labels[0] : null;
                 Labels.Remove(_label);
             }
             else

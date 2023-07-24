@@ -25,7 +25,7 @@ namespace HierarchyEnhancer.Editor
                     // var text = content.text;
                     // text = text.Substring(text.IndexOf('(') + 1).Trim(')');
 
-                    var rect = new Rect(_selectionRect.xMin + 2 + textWidth.x + compOffset, _selectionRect.yMin, 15f, 15f);
+                    var rect = new Rect(_selectionRect.xMin + 2 + textWidth.x + compOffset, _selectionRect.yMin, 16f, 16f);
 
                     GUI.DrawTexture(rect, content.image);
                     

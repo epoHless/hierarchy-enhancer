@@ -1,14 +1,17 @@
-﻿using HierarchyEnhancer.Editor;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ToggleRenderer : IRenderer
+namespace HierarchyEnhancer.Editor
 {
-    public bool IsEnabled { get; set; } = true;
-    public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
+    public class ToggleRenderer : IRenderer
     {
-        if (!LabelManager.ShowToggleButton) return;
+        public bool IsEnabled { get; set; } = true;
 
-        var rect = new Rect(_selectionRect.xMax - 16, _selectionRect.yMin - 1, 15, 15);
-        _gameObject.SetActive(GUI.Toggle(rect, _gameObject.activeSelf, GUIContent.none));
+        public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
+        {
+            if (!LabelManager.ShowToggleButton) return;
+
+            var rect = new Rect(_selectionRect.xMax - 16, _selectionRect.yMin, 16, 16);
+            _gameObject.SetActive(GUI.Toggle(rect, _gameObject.activeSelf, GUIContent.none));
+        }
     }
 }

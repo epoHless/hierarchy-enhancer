@@ -1,19 +1,22 @@
-﻿using HierarchyEnhancer.Editor;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-public class FocusRenderer : IRenderer
+namespace HierarchyEnhancer.Editor
 {
-    public bool IsEnabled { get; set; } = true;
-    public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
+    public class FocusRenderer : IRenderer
     {
-        if (!LabelManager.ShowFocusButton) return;
+        public bool IsEnabled { get; set; } = true;
 
-        if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15),
-                new GUIContent() { tooltip = "Click to focus" }, GUIStyle.none))
+        public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
         {
-            Selection.activeObject = _gameObject;
-            SceneView.FrameLastActiveSceneView();
+            if (!LabelManager.ShowFocusButton) return;
+
+            if (GUI.Button(new Rect(_selectionRect.xMin, _selectionRect.yMin, 15, 15),
+                    new GUIContent() { tooltip = "Click to focus" }, GUIStyle.none))
+            {
+                Selection.activeObject = _gameObject;
+                SceneView.FrameLastActiveSceneView();
+            }
         }
     }
 }

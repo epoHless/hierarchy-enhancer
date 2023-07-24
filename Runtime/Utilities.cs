@@ -4,7 +4,7 @@ namespace HierarchyEnhancer.Runtime
 {
     public static class Utilities
     {
-        public static Texture2D DrawCube(Color _col)
+        public static Texture2D CreateColoredTexture(Color _col)
         {
             Color[] pix = new Color[1 * 1];
 

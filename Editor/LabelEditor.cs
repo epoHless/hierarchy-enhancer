@@ -33,24 +33,23 @@ namespace HierarchyEnhancer.Editor
             AssetDatabase.SaveAssetIfDirty(script);
         }
 
-        internal void ShowTextColorBGColor()
+        internal void RenderColors()
         {
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.BeginVertical();
 
             EditorGUILayout.LabelField("Color", labelStyle);
-            script.textColor = EditorGUILayout.ColorField(script.textColor, GUILayout.Width(220));
+            script.textColor = EditorGUILayout.ColorField(script.textColor);
 
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.BeginVertical();
 
-            script.useCustomBackground = EditorGUILayout.Toggle("Custom BG", script.useCustomBackground);
             if (script.useCustomBackground)
             {
                 EditorGUILayout.LabelField("Background Color", labelStyle);
-                script.backgroundColor = EditorGUILayout.ColorField(script.backgroundColor, GUILayout.Width(220));
+                script.backgroundColor = EditorGUILayout.ColorField(script.backgroundColor);
             }
             else
             {
@@ -60,9 +59,17 @@ namespace HierarchyEnhancer.Editor
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            
+            script.useCustomBackground = EditorGUILayout.Toggle("Custom BG", script.useCustomBackground);
+
+            script.useGradient = script.useCustomBackground && EditorGUILayout.Toggle("Gradient", script.useGradient);
+            
+            EditorGUILayout.EndHorizontal();
         }
 
-        public void ShowFontStyleAlignment()
+        public void RenderFont()
         {
             EditorGUILayout.BeginHorizontal();
 
@@ -78,7 +85,7 @@ namespace HierarchyEnhancer.Editor
             EditorGUILayout.EndHorizontal();
         }
 
-        public void ShowIdentifierIcon()
+        public void RenderIcon()
         {
             GUILayout.BeginHorizontal();
 
