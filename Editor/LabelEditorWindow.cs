@@ -14,12 +14,12 @@ namespace HierarchyEnhancer.Editor
         string labelName = String.Empty;
 
         private Vector2 labelsScrollPos = Vector2.zero;
-        private Vector2 scrollPos = Vector2.zero;
+        private Vector2 infoScrollPos = Vector2.zero;
 
         private GUIStyle labelStyle;
-        
-        int labelTab = 0;
-        int optionsTab = 0;
+
+        private int labelTab = 0;
+        private int optionsTab = 0;
 
         [MenuItem("Enhanced Hierarchy/Labels Manager")]
         private static void ShowWindow()
@@ -64,122 +64,6 @@ namespace HierarchyEnhancer.Editor
             EditorApplication.RepaintHierarchyWindow();
         }
 
-        private bool RenderSettingsPanel()
-        {
-            minSize = new Vector2(230, 400);
-            maxSize = minSize;
-
-            GUILayout.Space(10);
-
-            LabelManager.ShowFocusButton =
-                GUILayout.Toggle(LabelManager.ShowFocusButton, " Show GameObject Focus Button");
-            LabelManager.ShowToggleButton =
-                GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
-            LabelManager.ShowHierarchyLines =
-                GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Lines");
-
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button("Change Default Directory", GUILayout.Width(220)))
-            {
-                var directory = EditorUtility.OpenFolderPanel("Change Directory", "", "");
-
-                if (string.IsNullOrEmpty(directory)) return true;
-
-                directory = directory.Substring(directory.IndexOf("Assets"));
-                PlayerPrefs.SetString("LabelDirectory", directory);
-
-                LabelManager.FetchLabels();
-                InitUI();
-            }
-
-            return false;
-        }
-
-        private void RenderLabelPanel()
-        {
-            minSize = new Vector2(740, 400);
-            maxSize = minSize;
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                using (new EditorGUILayout.VerticalScope())
-                {
-                    RenderLabels();
-
-                    GUILayout.FlexibleSpace();
-
-                    DrawSeparatorLine(new Vector2(230, 0), new Vector2(3, 410),new Color(0.16f, 0.16f, 0.16f, 1f));
-
-                    if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
-                    {
-                        LabelManager.FetchLabels();
-                    }
-
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        labelName = GUILayout.TextField(labelName, GUILayout.Width(200));
-
-                        if (GUILayout.Button("+", GUILayout.Width(20)))
-                        {
-                            if (labelName != String.Empty) LabelManager.CreateLabel(labelName);
-                        }
-                    }
-                }
-
-                if (_activeLabel) //Create the editor for the selected Preset
-                {
-                    using (new EditorGUILayout.VerticalScope())
-                    {
-                        var editor = UnityEditor.Editor.CreateEditor(_activeLabel) as LabelEditor;
-
-                        GUILayout.Space(-20);
-
-                        GUI.DrawTexture(new Rect(new Vector2(230, 0), new Vector2(3, 410)),
-                            Utilities.CreateColoredTexture(new Color(0.16f, 0.16f, 0.16f, 1f)));
-
-                        RenderLabel(editor);
-                    }
-                }
-            }
-        }
-
-        private static void DrawSeparatorLine(Vector2 _position, Vector2 _size, Color _color)
-        {
-            GUI.DrawTexture(new Rect(_position, _size),
-                Utilities.CreateColoredTexture(_color));
-        }
-
-        private void RenderLabel(LabelEditor _editor)
-        {
-            labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "GameObjects" });
-
-            GUILayout.Label(_activeLabel.name.Split('_')[1] + " Preset", new GUIStyle()
-            {
-                fontStyle = FontStyle.Bold,
-                normal = new GUIStyleState()
-                {
-                    textColor = _activeLabel.textColor
-                },
-                fontSize = 14
-            });
-
-            switch (labelTab)
-            {
-                case 0:
-                {
-                    RenderEditor(_editor);
-                    break;
-                }
-
-                case 1:
-                {
-                    RenderGameObjects(_editor);
-                    break;
-                }
-            }
-        }
-
         #region UI Render Methods
 
         private void RenderEditor(LabelEditor _editor)
@@ -213,7 +97,7 @@ namespace HierarchyEnhancer.Editor
                     labelStyle);
 
                 GUI.color = Color.green;
-            
+                
                 if (GUILayout.Button("Add GameObject", GUILayout.Width(110), GUILayout.Height(20)))
                 {
                     _editor.script.gameObjects.Add(new ObjectDictionary());
@@ -224,9 +108,9 @@ namespace HierarchyEnhancer.Editor
             
             GUILayout.Space(10);
 
-            using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, false, false))
+            using (var scrollView = new EditorGUILayout.ScrollViewScope(infoScrollPos, false, false))
             {
-                scrollPos = scrollView.scrollPosition;
+                infoScrollPos = scrollView.scrollPosition;
                 
                 for (int i = 0; i < _editor.script.gameObjects.Count; i++)
                 {
@@ -364,8 +248,131 @@ namespace HierarchyEnhancer.Editor
 
             GUILayout.EndScrollView();
         }
+        
+        private bool RenderSettingsPanel()
+        {
+            minSize = new Vector2(230, 400);
+            maxSize = minSize;
+
+            GUILayout.Space(10);
+
+            LabelManager.ShowFocusButton =
+                GUILayout.Toggle(LabelManager.ShowFocusButton, " Show GameObject Focus Button");
+            LabelManager.ShowToggleButton =
+                GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
+            LabelManager.ShowHierarchyLines =
+                GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Lines");
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Change Default Directory", GUILayout.Width(220)))
+            {
+                var directory = EditorUtility.OpenFolderPanel("Change Directory", "", "");
+
+                if (string.IsNullOrEmpty(directory)) return true;
+
+                directory = directory.Substring(directory.IndexOf("Assets"));
+                PlayerPrefs.SetString("LabelDirectory", directory);
+
+                LabelManager.FetchLabels();
+                InitUI();
+            }
+
+            return false;
+        }
+
+        private void RenderLabelPanel()
+        {
+            minSize = new Vector2(740, 400);
+            maxSize = minSize;
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                using (new EditorGUILayout.VerticalScope())
+                {
+                    RenderLabels();
+
+                    GUILayout.FlexibleSpace();
+
+                    DrawSeparatorLine(new Vector2(230, 0), new Vector2(3, 410),new Color(0.16f, 0.16f, 0.16f, 1f));
+
+                    if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
+                    {
+                        LabelManager.FetchLabels();
+                    }
+
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        labelName = GUILayout.TextField(labelName, GUILayout.Width(200));
+
+                        if (GUILayout.Button("+", GUILayout.Width(20)))
+                        {
+                            if (labelName != String.Empty) LabelManager.CreateLabel(labelName);
+                        }
+                    }
+                }
+
+                if (_activeLabel) //Create the editor for the selected Preset
+                {
+                    using (new EditorGUILayout.VerticalScope())
+                    {
+                        var editor = UnityEditor.Editor.CreateEditor(_activeLabel) as LabelEditor;
+
+                        GUILayout.Space(-20);
+
+                        DrawSeparatorLine(new Vector2(230, 0), 
+                            new Vector2(3, 410), 
+                            new Color(0.16f, 0.16f, 0.16f, 1f));
+
+                        RenderLabel(editor);
+                    }
+                }
+            }
+        }
+
+        private void RenderLabel(LabelEditor _editor)
+        {
+            labelTab = GUILayout.Toolbar(labelTab, new[] { "Style", "GameObjects" });
+
+            GUILayout.Label(_activeLabel.name.Split('_')[1] + " Preset", new GUIStyle()
+            {
+                fontStyle = FontStyle.Bold,
+                normal = new GUIStyleState()
+                {
+                    textColor = _activeLabel.textColor
+                },
+                fontSize = 14
+            });
+
+            switch (labelTab)
+            {
+                case 0:
+                {
+                    RenderEditor(_editor);
+                    break;
+                }
+
+                case 1:
+                {
+                    RenderGameObjects(_editor);
+                    break;
+                }
+            }
+        }
 
         #endregion
+
+        #region Utilities
+
+        private void DrawSeparatorLine(Vector2 _position, Vector2 _size, Color _color)
+        {
+            GUI.DrawTexture(new Rect(_position, _size),
+                Utilities.CreateColoredTexture(_color));
+        }
+
+        #endregion
+        
+        
     }
 #endif
 }
