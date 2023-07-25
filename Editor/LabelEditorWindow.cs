@@ -14,7 +14,7 @@ namespace HierarchyEnhancer.Editor
         string labelName = String.Empty;
 
         private Vector2 labelsScrollPos = Vector2.zero;
-        private Vector2 gameObjectsScrollPos = Vector2.zero;
+        private Vector2 scrollPos = Vector2.zero;
 
         private GUIStyle labelStyle;
         
@@ -44,57 +44,94 @@ namespace HierarchyEnhancer.Editor
 
         private void OnGUI()
         {
-            using (new EditorGUILayout.VerticalScope())
-            {
-                
-            }
-
-            EditorGUILayout.BeginVertical();
-
             optionsTab = GUILayout.Toolbar(optionsTab, new[] { "Labels", "Options" }, GUILayout.Width(225));
 
             switch (optionsTab) //toggle panels
             {
                 case 0: //labels panel
                 {
-                    minSize = new Vector2(740, 400);
-                    maxSize = minSize;
+                    RenderLabelPanel();
+                    break;
+                }
 
-                    EditorGUILayout.BeginHorizontal();
+                case 1: //options panel
+                {
+                    if (RenderSettingsPanel()) return;
+                    break;
+                }
+            }
 
-                    EditorGUILayout.BeginVertical();
+            EditorApplication.RepaintHierarchyWindow();
+        }
 
+        private bool RenderSettingsPanel()
+        {
+            minSize = new Vector2(230, 400);
+            maxSize = minSize;
+
+            GUILayout.Space(10);
+
+            LabelManager.ShowFocusButton =
+                GUILayout.Toggle(LabelManager.ShowFocusButton, " Show GameObject Focus Button");
+            LabelManager.ShowToggleButton =
+                GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
+            LabelManager.ShowHierarchyLines =
+                GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Lines");
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Change Default Directory", GUILayout.Width(220)))
+            {
+                var directory = EditorUtility.OpenFolderPanel("Change Directory", "", "");
+
+                if (string.IsNullOrEmpty(directory)) return true;
+
+                directory = directory.Substring(directory.IndexOf("Assets"));
+                PlayerPrefs.SetString("LabelDirectory", directory);
+
+                LabelManager.FetchLabels();
+                InitUI();
+            }
+
+            return false;
+        }
+
+        private void RenderLabelPanel()
+        {
+            minSize = new Vector2(740, 400);
+            maxSize = minSize;
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                using (new EditorGUILayout.VerticalScope())
+                {
                     RenderLabels();
 
                     GUILayout.FlexibleSpace();
 
-                    GUI.DrawTexture(new Rect(new Vector2(0, 357), new Vector2(230, 3)),
-                        Utilities.CreateColoredTexture(new Color(0.16f, 0.16f, 0.16f, 1f)));
+                    DrawSeparatorLine(new Vector2(230, 0), new Vector2(3, 410),new Color(0.16f, 0.16f, 0.16f, 1f));
 
                     if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
                     {
                         LabelManager.FetchLabels();
                     }
 
-                    GUILayout.BeginHorizontal();
-
-                    labelName = GUILayout.TextField(labelName, GUILayout.Width(200));
-
-                    if (GUILayout.Button("+", GUILayout.Width(20)))
+                    using (new EditorGUILayout.HorizontalScope())
                     {
-                        if (labelName != String.Empty) LabelManager.CreateLabel(labelName);
+                        labelName = GUILayout.TextField(labelName, GUILayout.Width(200));
+
+                        if (GUILayout.Button("+", GUILayout.Width(20)))
+                        {
+                            if (labelName != String.Empty) LabelManager.CreateLabel(labelName);
+                        }
                     }
+                }
 
-                    GUILayout.EndHorizontal();
-                    EditorGUILayout.EndVertical();
-
-                    if (_activeLabel) //Create the editor for the selected Preset
+                if (_activeLabel) //Create the editor for the selected Preset
+                {
+                    using (new EditorGUILayout.VerticalScope())
                     {
                         var editor = UnityEditor.Editor.CreateEditor(_activeLabel) as LabelEditor;
-
-                        EditorGUILayout.BeginVertical();
-
-                        // Shows the label properties to modify
 
                         GUILayout.Space(-20);
 
@@ -103,48 +140,14 @@ namespace HierarchyEnhancer.Editor
 
                         RenderLabel(editor);
                     }
-
-                    EditorGUILayout.EndHorizontal();
-
-                    break;
-                }
-
-                case 1: //options panel
-                {
-                    minSize = new Vector2(230, 400);
-                    maxSize = minSize;
-
-                    GUILayout.Space(10);
-
-                    LabelManager.ShowFocusButton =
-                        GUILayout.Toggle(LabelManager.ShowFocusButton, " Show GameObject Focus Button");
-                    LabelManager.ShowToggleButton =
-                        GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
-                    LabelManager.ShowHierarchyLines =
-                        GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Lines");
-
-                    GUILayout.FlexibleSpace();
-
-                    if (GUILayout.Button("Change Default Directory", GUILayout.Width(220)))
-                    {
-                        var directory = EditorUtility.OpenFolderPanel("Change Directory", "", "");
-
-                        if (string.IsNullOrEmpty(directory)) return;
-
-                        directory = directory.Substring(directory.IndexOf("Assets"));
-                        PlayerPrefs.SetString("LabelDirectory", directory);
-
-                        LabelManager.FetchLabels();
-                        InitUI();
-                    }
-
-                    break;
                 }
             }
+        }
 
-            EditorGUILayout.EndVertical();
-
-            EditorApplication.RepaintHierarchyWindow();
+        private static void DrawSeparatorLine(Vector2 _position, Vector2 _size, Color _color)
+        {
+            GUI.DrawTexture(new Rect(_position, _size),
+                Utilities.CreateColoredTexture(_color));
         }
 
         private void RenderLabel(LabelEditor _editor)
@@ -175,13 +178,11 @@ namespace HierarchyEnhancer.Editor
                     break;
                 }
             }
-
-            EditorGUILayout.EndVertical();
         }
 
         #region UI Render Methods
 
-        private static void RenderEditor(LabelEditor _editor)
+        private void RenderEditor(LabelEditor _editor)
         {
             GUILayout.BeginVertical(GUILayout.Width(463));
 
@@ -201,90 +202,84 @@ namespace HierarchyEnhancer.Editor
 
             GUILayout.Space(10);
 
-            GUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Width(470), GUILayout.Height(20));
-
-            labelStyle = new GUIStyle(GUI.skin.label) 
-            { 
-                fontStyle = FontStyle.Bold
-            };
-            
-            EditorGUILayout.LabelField($"Active Objects : {_editor.script.gameObjects.Count}",
-                labelStyle);
-
-            GUI.color = Color.green;
-            
-            if (GUILayout.Button("Add GameObject", GUILayout.Width(110), GUILayout.Height(20)))
+            using (new EditorGUILayout.HorizontalScope(GUI.skin.box, GUILayout.Width(470), GUILayout.Height(20)))
             {
-                _editor.script.gameObjects.Add(new ObjectDictionary());
+                labelStyle = new GUIStyle(GUI.skin.label) 
+                { 
+                    fontStyle = FontStyle.Bold
+                };
+            
+                EditorGUILayout.LabelField($"Active Objects : {_editor.script.gameObjects.Count}",
+                    labelStyle);
+
+                GUI.color = Color.green;
+            
+                if (GUILayout.Button("Add GameObject", GUILayout.Width(110), GUILayout.Height(20)))
+                {
+                    _editor.script.gameObjects.Add(new ObjectDictionary());
+                }
+
+                GUI.color = color;
             }
-
-            GUI.color = color;
-
-            GUILayout.EndHorizontal();
             
             GUILayout.Space(10);
 
-            gameObjectsScrollPos = GUILayout.BeginScrollView(gameObjectsScrollPos, false, false);
-
-            for (int i = 0; i < _editor.script.gameObjects.Count; i++)
+            using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, false, false))
             {
-                GUILayout.BeginVertical(GUI.skin.window, GUILayout.Width(460));
-                GUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Width(460));
-
-                var gameObjectInfo = _editor.script.gameObjects[i];
+                scrollPos = scrollView.scrollPosition;
                 
-                gameObjectInfo.GameObject =
-                    (GameObject)EditorGUILayout.ObjectField(gameObjectInfo.GameObject,
-                        typeof(GameObject), true);
-
-                foreach (var label in LabelManager.Labels)
+                for (int i = 0; i < _editor.script.gameObjects.Count; i++)
                 {
-                    var gameObjects = label.gameObjects.Where(_o => _o != null);
+                    var gameObjectInfo = _editor.script.gameObjects[i];
 
-                    if (_editor.script != label && gameObjects.Contains(gameObjectInfo))
+                    using (new EditorGUILayout.VerticalScope(GUI.skin.window, GUILayout.Width(460)))
                     {
-                        gameObjectInfo = null;
+                        using (new EditorGUILayout.HorizontalScope(GUI.skin.box, GUILayout.Width(460)))
+                        {
+                            gameObjectInfo.GameObject =
+                                (GameObject)EditorGUILayout.ObjectField(gameObjectInfo.GameObject,
+                                    typeof(GameObject), true);
+
+                            foreach (var label in LabelManager.Labels)
+                            {
+                                var gameObjects = label.gameObjects.Where(_o => _o != null);
+
+                                if (_editor.script != label && gameObjects.Contains(gameObjectInfo))
+                                {
+                                    gameObjectInfo = null;
+                                }
+                            }
+
+                            GUI.color = Color.red;
+                    
+                            if (GUILayout.Button("Remove", GUILayout.Width(55),GUILayout.Height(20)))
+                            {
+                                if (_editor.script.gameObjects.Contains(_editor.script.gameObjects[i]))
+                                {
+                                    _editor.script.gameObjects.Remove(_editor.script.gameObjects[i]);
+                                    return;
+                                }
+                            }
+
+                            GUI.color = color;
+                        }
+
+                        GUI.color = Color.green;
+                    
+                        if (GUILayout.Button("Add Tooltip", GUILayout.Width(75)))
+                        {
+                            gameObjectInfo.tooltips.Add(new Tooltip());
+                        }
+
+                        GUI.color = color;
+                    
+                        if(gameObjectInfo != null)
+                            RenderTooltips(gameObjectInfo);
                     }
+                
+                    GUILayout.Space(10);
                 }
-
-                GUI.color = Color.red;
-                
-                if (GUILayout.Button("Remove", GUILayout.Width(55),GUILayout.Height(20)))
-                {
-                    if (_editor.script.gameObjects.Contains(_editor.script.gameObjects[i]))
-                    {
-                        _editor.script.gameObjects.Remove(_editor.script.gameObjects[i]);
-                        
-                        GUILayout.EndHorizontal();
-                        GUILayout.EndVertical();
-                        GUILayout.EndScrollView();
-
-                        return;
-                    }
-                }
-
-                GUI.color = color;
-
-                GUILayout.EndHorizontal();
-
-                GUI.color = Color.green;
-                
-                if (GUILayout.Button("Add Tooltip", GUILayout.Width(75)))
-                {
-                    gameObjectInfo.tooltips.Add(new Tooltip());
-                }
-
-                GUI.color = color;
-                
-                if(gameObjectInfo != null)
-                    RenderTooltips(gameObjectInfo);
-                
-                GUILayout.EndVertical();
-                
-                GUILayout.Space(10);
             }
-
-            GUILayout.EndScrollView();
         }
 
         private void RenderTooltips(ObjectDictionary _gameObjectInfo)
@@ -293,25 +288,24 @@ namespace HierarchyEnhancer.Editor
             
             for (int j = 0; j < _gameObjectInfo.tooltips.Count; j++)
             {
-                GUILayout.BeginHorizontal(GUI.skin.box);
-
-                _gameObjectInfo.tooltips[j].icon =
-                    EditorGUILayout.ObjectField(_gameObjectInfo.tooltips[j].icon, typeof(Texture2D), false) as
-                        Texture2D;
-
-                _gameObjectInfo.tooltips[j].tooltip =
-                    EditorGUILayout.TextField(_gameObjectInfo.tooltips[j].tooltip);
-
-                GUI.color = Color.red;
-
-                if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+                using (new EditorGUILayout.HorizontalScope(GUI.skin.box))
                 {
-                    _gameObjectInfo.tooltips.Remove(_gameObjectInfo.tooltips[j]);
+                    _gameObjectInfo.tooltips[j].icon =
+                        EditorGUILayout.ObjectField(_gameObjectInfo.tooltips[j].icon, typeof(Texture2D), false) as
+                            Texture2D;
+
+                    _gameObjectInfo.tooltips[j].tooltip =
+                        EditorGUILayout.TextField(_gameObjectInfo.tooltips[j].tooltip);
+
+                    GUI.color = Color.red;
+
+                    if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20)))
+                    {
+                        _gameObjectInfo.tooltips.Remove(_gameObjectInfo.tooltips[j]);
+                    }
+
+                    GUI.color = color;
                 }
-
-                GUI.color = color;
-
-                GUILayout.EndHorizontal();
             }
         }
 
