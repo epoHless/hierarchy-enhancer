@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
@@ -6,6 +7,7 @@ namespace HierarchyEnhancer.Editor
     public class ComponentRenderer : IRenderer
     {
         public bool IsEnabled { get; set; } = true;
+        
         public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
         {
             var objectContent = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(_instanceID), null);
@@ -22,13 +24,13 @@ namespace HierarchyEnhancer.Editor
                     var content = EditorGUIUtility.ObjectContent(_gameObject.GetComponents(typeof(Component))[i],
                         typeof(Component));
 
-                    // var text = content.text;
-                    // text = text.Substring(text.IndexOf('(') + 1).Trim(')');
-
-                    var rect = new Rect(_selectionRect.xMin + 2 + textWidth.x + compOffset, _selectionRect.yMin, 16f, 16f);
+                    var text = content.text.Remove(0, _gameObject.name.Length);
+                    
+                    var rect = new Rect(_selectionRect.xMin + 6 + textWidth.x + compOffset, _selectionRect.y, 16f, 16f);
+                    GUI.Box(rect, new GUIContent("", text), GUIStyle.none);
 
                     GUI.DrawTexture(rect, content.image);
-                    
+                
                     compOffset += 16;
                 }
             }

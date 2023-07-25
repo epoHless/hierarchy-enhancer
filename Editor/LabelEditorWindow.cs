@@ -44,6 +44,11 @@ namespace HierarchyEnhancer.Editor
 
         private void OnGUI()
         {
+            using (new EditorGUILayout.VerticalScope())
+            {
+                
+            }
+
             EditorGUILayout.BeginVertical();
 
             optionsTab = GUILayout.Toolbar(optionsTab, new[] { "Labels", "Options" }, GUILayout.Width(225));

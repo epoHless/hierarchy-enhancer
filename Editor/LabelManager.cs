@@ -30,6 +30,7 @@ namespace HierarchyEnhancer.Editor
             EditorApplication.quitting += SaveAssets;
         }
 
+        [UnityEditor.Callbacks.DidReloadScripts, InitializeOnLoadMethod]
         public static void FetchLabels()
         {
             if (string.IsNullOrEmpty(LabelsDirectory))
