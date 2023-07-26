@@ -82,7 +82,24 @@ namespace HierarchyEnhancer.Editor
             EditorGUILayout.LabelField("Alignment", labelStyle);
             script.alignment = (TextAnchor)EditorGUILayout.EnumPopup(script.alignment);
             EditorGUILayout.EndVertical();
+            
             EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.LabelField("Font", labelStyle);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("font"));
+            EditorGUILayout.EndVertical();
+            
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.LabelField("Font Size", labelStyle);
+            script.fontSize = EditorGUILayout.IntField(script.fontSize);
+            EditorGUILayout.EndVertical();
+            
+            EditorGUILayout.EndHorizontal();
+
+            serializedObject.ApplyModifiedProperties();
         }
 
         public void RenderIcon()

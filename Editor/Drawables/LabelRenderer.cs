@@ -85,7 +85,9 @@ namespace HierarchyEnhancer.Editor
 
                 contentOffset = new Vector2(18, -1),
                 fontStyle = _preset.fontStyle,
-                alignment = _preset.alignment
+                alignment = _preset.alignment,
+                font = _preset.font,
+                fontSize = _preset.fontSize
             };
 
             return style;

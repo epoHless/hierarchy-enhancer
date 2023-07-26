@@ -8,6 +8,8 @@ namespace HierarchyEnhancer.Runtime
         [HideInInspector] public Texture icon;
         
         [HideInInspector] public FontStyle fontStyle;
+        [HideInInspector] public Font font;
+        [HideInInspector] public int fontSize;
         [HideInInspector] public TextAnchor alignment = TextAnchor.MiddleLeft;
         [HideInInspector] public Color textColor;
 
