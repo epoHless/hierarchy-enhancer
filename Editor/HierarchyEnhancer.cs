@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
@@ -7,11 +8,11 @@ namespace HierarchyEnhancer.Editor
     [InitializeOnLoad]
     public static class HierarchyEnhancer
     {
-        public static IRenderer[] _renderers { get; private set; }
+        private static List<IRenderer> _renderers;
 
         static HierarchyEnhancer()
         {
-            _renderers = new IRenderer[]
+            _renderers = new List<IRenderer>()
             {
                 new LabelRenderer(),
                 new ParentRenderer(Color.gray),
@@ -30,9 +31,19 @@ namespace HierarchyEnhancer.Editor
             var gameObject = EditorUtility.InstanceIDToObject(_instanceID) as GameObject;
             if (!gameObject) return;
 
-            for (int i = 0; i < _renderers.Length; i++)
+            for (int i = 0; i < _renderers.Count; i++)
             {
                 if(_renderers[i].IsEnabled) _renderers[i].OnGUI(_instanceID, _selectionRect, gameObject);
+            }
+        }
+
+        public static void ToggleRender<T>(bool _toggle)
+        {
+            var renderer = _renderers.Find(_renderer => _renderer.GetType() == typeof(T));
+
+            if (renderer != null)
+            {
+                renderer.IsEnabled = _toggle;
             }
         }
     }

@@ -21,9 +21,71 @@ namespace HierarchyEnhancer.Editor
         internal static readonly Color UnselectedColor = new(0.22f, 0.22f, 0.22f, 1f);
         internal static readonly Color HoveredColor = new(0.27f, 0.27f, 0.27f, 1f);
 
-        internal static bool ShowFocusButton = true;
-        internal static bool ShowToggleButton = true;
-        internal static bool ShowHierarchyLines { get; set; } = true;
+        private static bool _showFocusButton = true;
+        internal static bool ShowFocusButton
+        {
+            get => _showFocusButton;
+            set
+            {
+                _showFocusButton = value;
+                HierarchyEnhancer.ToggleRender<FocusRenderer>(value);
+            }
+        }
+
+        private static bool _showToggleButton = true;
+        internal static bool ShowToggleButton
+        {
+            get => _showToggleButton;
+            set
+            {
+                _showToggleButton = value;
+                HierarchyEnhancer.ToggleRender<ToggleRenderer>(value);
+            }
+        }
+
+        private static bool _showHierarchyLines = true;
+        internal static bool ShowHierarchyLines
+        {
+            get => _showHierarchyLines;
+            set
+            {
+                _showHierarchyLines = value;
+                HierarchyEnhancer.ToggleRender<ParentRenderer>(value);
+            }
+        }
+
+        private static bool _showLabels = true;
+        public static bool ShowLabels
+        {
+            get => _showLabels;
+            set
+            {
+                _showLabels = value;
+                HierarchyEnhancer.ToggleRender<LabelRenderer>(value);
+            }
+        }
+        
+        private static bool _showComponents = true;
+        public static bool ShowComponents
+        {
+            get => _showComponents;
+            set
+            {
+                _showComponents = value;
+                HierarchyEnhancer.ToggleRender<ComponentRenderer>(value);
+            }
+        }
+        
+        private static bool _showIcons = true;
+        public static bool ShowIcons
+        {
+            get => _showIcons;
+            set
+            {
+                _showIcons = value;
+                HierarchyEnhancer.ToggleRender<IconRenderer>(value);
+            }
+        }
 
         static LabelManager()
         {

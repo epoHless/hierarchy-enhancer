@@ -261,7 +261,13 @@ namespace HierarchyEnhancer.Editor
             LabelManager.ShowToggleButton =
                 GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
             LabelManager.ShowHierarchyLines =
-                GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Lines");
+                GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Parent Lines");
+            LabelManager.ShowLabels =
+                GUILayout.Toggle(LabelManager.ShowLabels, " Show Hierarchy Labels");
+            LabelManager.ShowComponents =
+                GUILayout.Toggle(LabelManager.ShowComponents, " Show Hierarchy Components");
+            LabelManager.ShowIcons =
+                GUILayout.Toggle(LabelManager.ShowIcons, " Show Hierarchy Icons");
 
             GUILayout.FlexibleSpace();
 
