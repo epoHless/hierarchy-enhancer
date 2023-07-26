@@ -36,19 +36,17 @@ namespace HierarchyEnhancer.Editor
 
                     var component = components[i] as MonoBehaviour;
 
-                    if (component)
+                    if (GUI.Button(rect, new GUIContent("", text), GUIStyle.none))
                     {
-                        if(!component.enabled) GUI.color = Color.red;
-                        
-                        if (GUI.Button(rect, new GUIContent("", text)))
-                        {
+                        if(component)
                             component.enabled = !component.enabled;
-                        }
                     }
 
-                    GUI.color = GUIColor;
+                    if(component && !component.enabled) GUI.color = Color.red;
 
                     GUI.DrawTexture(rect, content.image);
+                    
+                    GUI.color = GUIColor;
 
                     compOffset += 16;
                 }
