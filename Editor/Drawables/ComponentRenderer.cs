@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
@@ -7,6 +6,13 @@ namespace HierarchyEnhancer.Editor
     public class ComponentRenderer : IRenderer
     {
         public bool IsEnabled { get; set; } = true;
+
+        private Color GUIColor;
+        
+        public ComponentRenderer()
+        {
+            GUIColor = GUI.color;
+        }
         
         public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
         {
@@ -27,10 +33,23 @@ namespace HierarchyEnhancer.Editor
                     var text = content.text.Remove(0, _gameObject.name.Length);
                     
                     var rect = new Rect(_selectionRect.xMin + 6 + textWidth.x + compOffset, _selectionRect.y, 16f, 16f);
-                    GUI.Box(rect, new GUIContent("", text), GUIStyle.none);
+
+                    var component = components[i] as MonoBehaviour;
+
+                    if (component)
+                    {
+                        if(!component.enabled) GUI.color = Color.red;
+                        
+                        if (GUI.Button(rect, new GUIContent("", text)))
+                        {
+                            component.enabled = !component.enabled;
+                        }
+                    }
+
+                    GUI.color = GUIColor;
 
                     GUI.DrawTexture(rect, content.image);
-                
+
                     compOffset += 16;
                 }
             }

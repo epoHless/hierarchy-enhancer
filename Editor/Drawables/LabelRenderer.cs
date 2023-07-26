@@ -26,14 +26,8 @@ namespace HierarchyEnhancer.Editor
 
                     var iconRect = new Rect(_selectionRect.xMin, _selectionRect.yMin, 16f, 16f);
 
-                    if (preset.icon)
-                    {
-                        GUI.DrawTexture(iconRect, preset.icon);
-                    }
-                    else
-                    {
-                        GUI.DrawTexture(iconRect, SetIcon(_gameObject));
-                    }
+                    if(preset.useIcon)
+                        GUI.DrawTexture(iconRect, preset.icon ? preset.icon : SetIcon(_gameObject));
                 }
             }
         }

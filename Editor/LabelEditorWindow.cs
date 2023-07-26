@@ -21,6 +21,8 @@ namespace HierarchyEnhancer.Editor
         private int labelTab = 0;
         private int optionsTab = 0;
 
+        private bool showFontOptions = true;
+
         [MenuItem("Enhanced Hierarchy/Labels Manager")]
         private static void ShowWindow()
         {
@@ -72,10 +74,17 @@ namespace HierarchyEnhancer.Editor
 
             GUILayout.Space(10);
             _editor!.RenderIcon();
-            GUILayout.Space(10);
-            _editor!.RenderFont();
+
             GUILayout.Space(10);
             _editor!.RenderColors();
+            
+            GUILayout.Space(10);
+            showFontOptions = EditorGUILayout.Foldout(showFontOptions, "Show font options");
+
+            if (showFontOptions)
+            {
+                _editor!.RenderFont();
+            }
 
             GUILayout.EndVertical();
         }

@@ -17,6 +17,8 @@ namespace HierarchyEnhancer.Runtime
         [HideInInspector] public bool useGradient;
         [HideInInspector] public Color backgroundColor = new Color(0.22f, 0.22f, 0.22f, 1f);
 
+        [HideInInspector] public bool useIcon = true;
+        
         [NonReorderable] public List<ObjectDictionary> gameObjects;
 
         public bool isActive = true;

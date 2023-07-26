@@ -71,6 +71,8 @@ namespace HierarchyEnhancer.Editor
 
         public void RenderFont()
         {
+            GUI.depth--;
+            
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.BeginVertical();
@@ -99,6 +101,8 @@ namespace HierarchyEnhancer.Editor
             
             EditorGUILayout.EndHorizontal();
 
+            GUI.depth++;
+            
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -110,6 +114,8 @@ namespace HierarchyEnhancer.Editor
             EditorGUILayout.LabelField("Icon", labelStyle);
             script.icon = EditorGUILayout.ObjectField(script.icon, typeof(Texture), true) as Texture;
             EditorGUILayout.EndVertical();
+
+            script.useIcon = EditorGUILayout.Toggle("Use Icon", script.useIcon);
 
             EditorGUILayout.EndHorizontal();
         }
