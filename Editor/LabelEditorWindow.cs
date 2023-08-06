@@ -202,10 +202,7 @@ namespace HierarchyEnhancer.Editor
             }
         }
 
-        /// <summary>
-        /// Creates all the label buttons
-        /// </summary>
-        private void RenderLabels()
+        private void RenderLabelButtons()
         {
             labelsScrollPos = GUILayout.BeginScrollView(labelsScrollPos, false, false);
 
@@ -266,17 +263,17 @@ namespace HierarchyEnhancer.Editor
             GUILayout.Space(10);
 
             LabelManager.ShowFocusButton =
-                GUILayout.Toggle(LabelManager.ShowFocusButton, " Show GameObject Focus Button");
+                GUILayout.Toggle(LabelManager.ShowFocusButton, "GameObject Focus Button");
             LabelManager.ShowToggleButton =
-                GUILayout.Toggle(LabelManager.ShowToggleButton, " Show GameObject Toggle Button");
+                GUILayout.Toggle(LabelManager.ShowToggleButton, "GameObject Toggle Button");
             LabelManager.ShowHierarchyLines =
-                GUILayout.Toggle(LabelManager.ShowHierarchyLines, " Show Hierarchy Parent Lines");
+                GUILayout.Toggle(LabelManager.ShowHierarchyLines, "Hierarchy Parent Lines");
             LabelManager.ShowLabels =
-                GUILayout.Toggle(LabelManager.ShowLabels, " Show Hierarchy Labels");
+                GUILayout.Toggle(LabelManager.ShowLabels, "Hierarchy Labels");
             LabelManager.ShowComponents =
-                GUILayout.Toggle(LabelManager.ShowComponents, " Show Hierarchy Components");
+                GUILayout.Toggle(LabelManager.ShowComponents, "Hierarchy Components");
             LabelManager.ShowIcons =
-                GUILayout.Toggle(LabelManager.ShowIcons, " Show Hierarchy Icons");
+                GUILayout.Toggle(LabelManager.ShowIcons, "Hierarchy Icons");
 
             GUILayout.FlexibleSpace();
 
@@ -305,7 +302,7 @@ namespace HierarchyEnhancer.Editor
             {
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    RenderLabels();
+                    RenderLabelButtons();
 
                     GUILayout.FlexibleSpace();
 
