@@ -52,11 +52,12 @@ namespace HierarchyEnhancer.Editor
 
         private GUIStyle SetStyle(Label _preset, int _instanceID, Rect _rect)
         {
-            var color = _preset.useCustomBackground ? _preset.backgroundColor : new Color(0.22f, 0.22f, 0.22f, 1f);
+            var guiColor = LabelManager.GetGUIColor();
+
+            var color = _preset.useCustomBackground ? _preset.backgroundColor : guiColor;
 
             Color backgroundColor = GetBackgroundColor(_instanceID, color);
             backgroundColor = SetBrightness(_instanceID, backgroundColor);
-
             Color textColor = GetTextColor(_preset, _instanceID);
 
             var fadedColor = backgroundColor;
@@ -87,6 +88,11 @@ namespace HierarchyEnhancer.Editor
             return style;
         }
 
+        private bool IsGameObjectEnabled(int _instanceID)
+        {
+            return EditorUtility.GetObjectEnabled(EditorUtility.InstanceIDToObject(_instanceID)) == 1;
+        }
+
         private Texture2D SetBackgroundType(Label _preset, Rect _rect, Color _fadedColor, Color _backgroundColor)
         {
             return _preset.useGradient
@@ -114,10 +120,7 @@ namespace HierarchyEnhancer.Editor
                 ? _color
                 : LabelManager.SelectedColor;
         }
-
-        private bool IsGameObjectEnabled(int _instanceID)
-        {
-            return EditorUtility.GetObjectEnabled(EditorUtility.InstanceIDToObject(_instanceID)) == 1;
-        }
+        
+        
     }
 }

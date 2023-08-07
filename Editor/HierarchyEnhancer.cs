@@ -21,6 +21,7 @@ namespace HierarchyEnhancer.Editor
                 new ToggleRenderer(),
                 new IconRenderer()
             };
+            
             EditorApplication.hierarchyWindowItemOnGUI -= DrawHierarchy;
             EditorApplication.hierarchyWindowItemOnGUI += DrawHierarchy;
         }
