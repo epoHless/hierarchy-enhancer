@@ -32,23 +32,26 @@ namespace HierarchyEnhancer.Editor
 
                     var text = content.text.Remove(0, _gameObject.name.Length);
                     
-                    var rect = new Rect(_selectionRect.xMin + 6 + textWidth.x + compOffset, _selectionRect.y, 16f, 16f);
+                    var rect = new Rect(_selectionRect.xMin + textWidth.x + compOffset, _selectionRect.y, 16f, 16f);
 
-                    var component = components[i] as MonoBehaviour;
+                    var component = components[i] as Object;
+                    bool isHidden = component.hideFlags == HideFlags.HideInInspector;
 
                     if (GUI.Button(rect, new GUIContent("", text), GUIStyle.none))
                     {
                         if(component)
-                            component.enabled = !component.enabled;
+                        {
+                            component.hideFlags = isHidden ? HideFlags.None : HideFlags.HideInInspector;
+                        }
                     }
 
-                    if(component && !component.enabled) GUI.color = Color.red;
+                    if(component && isHidden) GUI.color = Color.red;
 
                     GUI.DrawTexture(rect, content.image);
                     
                     GUI.color = GUIColor;
 
-                    compOffset += 16;
+                    compOffset += 17;
                 }
             }
         }

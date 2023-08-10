@@ -11,16 +11,16 @@ namespace HierarchyEnhancer.Editor
 
         public ParentRenderer(Color _color)
         {
-            color = _color;
+            color = new Color(0.44f, 0.44f, 0.44f, 1f);
         }
 
         public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject)
         {
             if (!LabelManager.ShowHierarchyLines) return;
 
-            if (_gameObject.transform.childCount > 0)
+            if (_gameObject.transform.childCount == 0 && !_gameObject.transform.parent)
             {
-                DrawLine(_selectionRect, color, 6, 6, -24.5f, 5);
+                DrawLine(_selectionRect, color, 1, 16, -8f);
             }
 
             var transforms = GetParentCount(_gameObject);
@@ -28,18 +28,21 @@ namespace HierarchyEnhancer.Editor
             if (_gameObject.transform.parent != null)
             {
                 if (_gameObject.transform.childCount == 0)
-                    DrawLine(_selectionRect, color, 30f, 1f, -36f, 7.45f);
+                {
+                    DrawLine(_selectionRect, color, 16f, 1f, -22f, 7.45f);
+                    // DrawLine(_selectionRect, color, 1, 16, -8f);
+                }
                 else
-                    DrawLine(_selectionRect, color, 17, 1f, -36, 7.45f);
+                    DrawLine(_selectionRect, color, 8, 1f, -22, 7.45f);
 
                 for (int i = 0; i < transforms.Count; i++) //adds additional lines for nested objects
                 {
                     if (transforms[i] &&
                         _gameObject.transform.childCount == 0 &&
                         transforms[i].GetChild(transforms[i].childCount - 1).gameObject == _gameObject)
-                        DrawLine(_selectionRect, color, 1, 8f, -36f - (14f * i));
+                        DrawLine(_selectionRect, color, 1, 8f, -22f - (14f * i));
                     else
-                        DrawLine(_selectionRect, color, 1, 16, -36f - (14f * i));
+                        DrawLine(_selectionRect, color, 1, 16, -22f - (14f * i));
                 }
             }
         }
