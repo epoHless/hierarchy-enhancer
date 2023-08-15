@@ -2,6 +2,7 @@
 
 namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
     public class ToggleRenderer : IRenderer
     {
         public bool IsEnabled { get; set; } = true;
@@ -14,4 +15,5 @@ namespace HierarchyEnhancer.Editor
             _gameObject.SetActive(GUI.Toggle(rect, _gameObject.activeSelf, GUIContent.none));
         }
     }
+#endif
 }

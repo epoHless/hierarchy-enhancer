@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
     public class LabelRenderer : IRenderer
     {
         public bool IsEnabled { get; set; } = true;
@@ -123,4 +124,5 @@ namespace HierarchyEnhancer.Editor
         
         
     }
+#endif
 }

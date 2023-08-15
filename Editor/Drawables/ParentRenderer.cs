@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
     public class ParentRenderer : IRenderer
     {
         public bool IsEnabled { get; set; } = true;
@@ -69,4 +70,5 @@ namespace HierarchyEnhancer.Editor
             return parents;
         }
     }
+#endif
 }

@@ -2,6 +2,7 @@
 
 namespace HierarchyEnhancer.Editor
 {
+#if UNITY_EDITOR
     public class IconRenderer : IRenderer
     {
         public bool IsEnabled { get; set; } = true;
@@ -39,4 +40,5 @@ namespace HierarchyEnhancer.Editor
             }
         }
     }
+#endif
 }
