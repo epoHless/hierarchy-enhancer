@@ -19,7 +19,7 @@ namespace HierarchyEnhancer.Editor
 
                 if (_gameObject != null && HasObjects(_gameObject, preset))
                 {
-                    GUI.DrawTexture(_selectionRect, Utilities.CreateColoredTexture(LabelManager.UnselectedColor));
+                    GUI.DrawTexture(_selectionRect, Utilities.CreateColoredTexture(Utilities.UnselectedColor));
 
                     var guiContent = new GUIContent() { text = content.text };
 
@@ -53,7 +53,7 @@ namespace HierarchyEnhancer.Editor
 
         private GUIStyle SetStyle(Label _preset, int _instanceID, Rect _rect)
         {
-            var guiColor = LabelManager.GetGUIColor();
+            var guiColor = Utilities.GetGUIColor();
 
             var color = _preset.useCustomBackground ? _preset.backgroundColor : guiColor;
 
@@ -75,7 +75,7 @@ namespace HierarchyEnhancer.Editor
                 },
                 hover = new GUIStyleState()
                 {
-                    background = Utilities.CreateColoredTexture(LabelManager.HoveredColor),
+                    background = Utilities.CreateColoredTexture(Utilities.HoveredColor),
                     textColor = textColor
                 },
 
@@ -119,7 +119,7 @@ namespace HierarchyEnhancer.Editor
         {
             return EditorUtility.InstanceIDToObject(_instanceID) != Selection.activeObject
                 ? _color
-                : LabelManager.SelectedColor;
+                : Utilities.SelectedColor;
         }
         
         
