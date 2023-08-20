@@ -17,10 +17,6 @@ namespace HierarchyEnhancer.Editor
 
         internal static List<Label> Labels = new List<Label>();
 
-        internal static Color SelectedColor = new(0.17f, 0.36f, 0.53f, 1f);
-        internal static Color UnselectedColor => GetGUIColor();
-        internal static Color HoveredColor => GetHoveredGUIColor();
-
         #region Renderer Toggles
 
         private static bool _showFocusButton = true;
@@ -215,16 +211,6 @@ namespace HierarchyEnhancer.Editor
             {
                 EditorUtility.DisplayDialog("ERROR", $"Could not find asset at path: {assetPath}", "OK");
             }
-        }
-        
-        private static Color GetHoveredGUIColor()
-        {
-            return EditorGUIUtility.isProSkin ? new(0.27f, 0.27f, 0.27f, 1f) : new (0.7f, 0.7f, 0.7f, 1f);
-        }
-        
-        public static Color GetGUIColor()
-        {
-            return EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f, 1f) : new Color(0.78f, 0.78f, 0.78f, 1f);
         }
     }
 #endif

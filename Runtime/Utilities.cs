@@ -1,9 +1,24 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace HierarchyEnhancer.Runtime
 {
     public static class Utilities
     {
+        public static Color SelectedColor = new Color(0.17f, 0.36f, 0.53f, 1f);
+        public static Color UnselectedColor => GetGUIColor();
+        public static Color HoveredColor => GetHoveredGUIColor();
+        
+        private static Color GetHoveredGUIColor()
+        {
+            return EditorGUIUtility.isProSkin ? new Color(0.27f, 0.27f, 0.27f, 1f) : new (0.7f, 0.7f, 0.7f, 1f);
+        }
+        
+        public static Color GetGUIColor()
+        {
+            return EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f, 1f) : new Color(0.78f, 0.78f, 0.78f, 1f);
+        }
+        
         public static Texture2D CreateColoredTexture(Color _col)
         {
             Color[] pix = new Color[1 * 1];

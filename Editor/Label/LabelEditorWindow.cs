@@ -306,8 +306,6 @@ namespace HierarchyEnhancer.Editor
 
                     GUILayout.FlexibleSpace();
 
-                    DrawSeparatorLine(new Vector2(230, 0), new Vector2(3, 410),new Color(0.16f, 0.16f, 0.16f, 1f));
-
                     if (GUILayout.Button("Fetch Labels", GUILayout.Width(223)))
                     {
                         LabelManager.FetchLabels();
@@ -331,10 +329,6 @@ namespace HierarchyEnhancer.Editor
                         var editor = UnityEditor.Editor.CreateEditor(_activeLabel) as LabelEditor;
 
                         GUILayout.Space(-20);
-
-                        DrawSeparatorLine(new Vector2(230, 0), 
-                            new Vector2(3, 410), 
-                            new Color(0.16f, 0.16f, 0.16f, 1f));
 
                         RenderLabel(editor);
                     }
@@ -373,18 +367,6 @@ namespace HierarchyEnhancer.Editor
         }
 
         #endregion
-
-        #region Utilities
-
-        private void DrawSeparatorLine(Vector2 _position, Vector2 _size, Color _color)
-        {
-            GUI.DrawTexture(new Rect(_position, _size),
-                Utilities.CreateColoredTexture(_color));
-        }
-
-        #endregion
-        
-        
     }
 #endif
 }
