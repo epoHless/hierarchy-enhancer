@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-public interface IRenderer
+namespace HierarchyEnhancer.Editor
 {
-    public bool IsEnabled { get; set; }
-    public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject);
+    public interface IRenderer
+    {
+        public bool IsEnabled { get; set; }
+        public void OnGUI(int _instanceID, Rect _selectionRect, GameObject _gameObject);
+    }
 }

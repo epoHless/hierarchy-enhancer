@@ -4,6 +4,7 @@ using System.IO;
 using HierarchyEnhancer.Runtime;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace HierarchyEnhancer.Editor
 {
@@ -89,6 +90,9 @@ namespace HierarchyEnhancer.Editor
 
         static LabelManager()
         {
+            FetchLabels();
+            
+            EditorApplication.quitting -= OnQuit;
             EditorApplication.quitting += OnQuit;
         }
 

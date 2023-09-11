@@ -5,6 +5,7 @@ namespace HierarchyEnhancer.Runtime
 {
     public static class Utilities
     {
+#if UNITY_EDITOR
         public static Color SelectedColor = new Color(0.17f, 0.36f, 0.53f, 1f);
         public static Color UnselectedColor => GetGUIColor();
         public static Color HoveredColor => GetHoveredGUIColor();
@@ -64,5 +65,6 @@ namespace HierarchyEnhancer.Runtime
             
             return texture2D;
         }
+#endif
     }
 }

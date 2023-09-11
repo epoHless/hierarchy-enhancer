@@ -23,7 +23,7 @@ namespace HierarchyEnhancer.Editor
 
         private bool showFontOptions = true;
 
-        [MenuItem("epoHless/Enhanced Hierarchy Manager")]
+        [MenuItem("Tools/epoHless/Enhanced Hierarchy Manager")]
         private static void ShowWindow()
         {
             var window = GetWindow<LabelEditorWindow>();
